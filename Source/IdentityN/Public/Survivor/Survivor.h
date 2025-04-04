@@ -51,6 +51,20 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
     class UInputAction* MoveAction;
 
+private:
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Survivor, meta = (AllowPrivateAccess = "true"))
+    int32 PlayerId = -1;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Survivor, meta = (AllowPrivateAccess = "true"))
+    float MaxHP = 2.0f;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Survivor, meta = (AllowPrivateAccess = "true"))
+    float HP = MaxHP;
+    
+    // 생존자 상태 Enum 으로 만들고 준 후 public 에서 Get 으로 조회 가능하도록
+
+    // 생존자 속도 및 나머지 공통 항목들 추가 작성
+
 public:
     /** Returns CameraBoom subobject **/
     FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
