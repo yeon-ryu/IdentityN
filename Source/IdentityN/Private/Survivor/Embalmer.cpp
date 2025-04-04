@@ -20,4 +20,5 @@ AEmbalmer::AEmbalmer()
 
 void AEmbalmer::BeginPlay()
 {
+    Super::BeginPlay();
 }
