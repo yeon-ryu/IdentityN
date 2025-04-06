@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
-#include "../../../../Plugins/EnhancedInput/Source/EnhancedInput/Public/InputActionValue.h"
 #include "Survivor.generated.h"
 
 UCLASS()
@@ -29,6 +28,10 @@ public:
 
     virtual void NotifyControllerChanged() override;
 
+public:
+	UPROPERTY( EditAnywhere )
+	class USMove* MoveComp;
+
 private:
 	/** Camera boom positioning the camera behind the character */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
@@ -45,11 +48,6 @@ private:
 	/** Look Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
     class UInputAction* LookAction;
-
-    // 아래 이동 로직 Actor Component 로 이동
-	/** Move Input Action */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-    class UInputAction* MoveAction;
 
 private:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Survivor, meta = (AllowPrivateAccess = "true"))
@@ -72,10 +70,7 @@ public:
     FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 
 protected:
-    /** Called for movement input */
-    void Move(const FInputActionValue& Value);
-
     /** Called for looking input */
-    void Look(const FInputActionValue& Value);
+    void Look(const struct FInputActionValue& Value);
 
 };
