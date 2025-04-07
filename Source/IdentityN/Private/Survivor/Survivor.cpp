@@ -10,6 +10,9 @@
 #include "../../../../Plugins/EnhancedInput/Source/EnhancedInput/Public/EnhancedInputSubsystems.h"
 #include "Survivor/SMove.h"
 #include "../../../../Plugins/EnhancedInput/Source/EnhancedInput/Public/InputActionValue.h"
+#include "../../../../Plugins/EnhancedInput/Source/EnhancedInput/Public/InputMappingContext.h"
+#include "../../../../Plugins/EnhancedInput/Source/EnhancedInput/Public/InputAction.h"
+#include "UObject/ConstructorHelpers.h"
 
 // Sets default values
 ASurvivor::ASurvivor()
@@ -104,6 +107,7 @@ float ASurvivor::TakeDamage(float Damage, struct FDamageEvent const& DamageEvent
 {
     HP -= Damage;
 
+    return HP;
 }
 
 void ASurvivor::Look(const FInputActionValue& Value)

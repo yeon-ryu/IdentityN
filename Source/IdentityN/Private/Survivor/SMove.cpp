@@ -7,6 +7,8 @@
 #include "../../../../Plugins/EnhancedInput/Source/EnhancedInput/Public/EnhancedInputComponent.h"
 #include "../../../../Plugins/EnhancedInput/Source/EnhancedInput/Public/InputActionValue.h"
 #include "Camera/CameraComponent.h"
+#include "../../../../Plugins/EnhancedInput/Source/EnhancedInput/Public/InputAction.h"
+#include "UObject/ConstructorHelpers.h"
 
 // Sets default values for this component's properties
 USMove::USMove()
@@ -39,15 +41,15 @@ void USMove::BeginPlay()
 
     SetMoveData();
 
-    ConstructorHelpers::FObjectFinder<UInputAction> TempIAMove(TEXT("/Script/EnhancedInput.InputAction'/Game/ThirdPerson/Input/Actions/IA_Move.IA_Move'"));
-    if (TempIAMove.Succeeded()) {
-        IA_Move = TempIAMove.Object;
-    }
+    //ConstructorHelpers::FObjectFinder<UInputAction> TempIAMove(TEXT("/Script/EnhancedInput.InputAction'/Game/ThirdPerson/Input/Actions/IA_Move.IA_Move'"));
+    //if (TempIAMove.Succeeded()) {
+    //    IA_Move = TempIAMove.Object;
+    //}
 
-    ConstructorHelpers::FObjectFinder<UInputAction> TempIACrouch(TEXT("/Script/EnhancedInput.InputAction'/Game/RGY/Inputs/IA_Crouch.IA_Crouch'"));
-    if (TempIACrouch.Succeeded()) {
-        IA_Crouch = TempIACrouch.Object;
-    }
+    //ConstructorHelpers::FObjectFinder<UInputAction> TempIACrouch(TEXT("/Script/EnhancedInput.InputAction'/Game/RGY/Inputs/IA_Crouch.IA_Crouch'"));
+    //if (TempIACrouch.Succeeded()) {
+    //    IA_Crouch = TempIACrouch.Object;
+    //}
 }
 
 
