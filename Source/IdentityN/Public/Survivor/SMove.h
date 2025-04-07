@@ -31,10 +31,16 @@ private:
 	UPROPERTY()
 	class UCharacterMovementComponent* MoveComp;
 
+public:
+    bool bCrouch = false;
+
 private:
     /** Move Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-    class UInputAction* MoveAction;
+    class UInputAction* IA_Move;
+
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+    class UInputAction* IA_Crouch;
 
 public:
 	void SetupInputBinding(class UEnhancedInputComponent* input);

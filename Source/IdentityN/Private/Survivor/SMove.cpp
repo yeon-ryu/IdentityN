@@ -38,6 +38,16 @@ void USMove::BeginPlay()
     MoveComp->BrakingDecelerationFalling = 1500.0f;
 
     SetMoveData();
+
+    ConstructorHelpers::FObjectFinder<UInputAction> TempIAMove(TEXT("/Script/EnhancedInput.InputAction'/Game/ThirdPerson/Input/Actions/IA_Move.IA_Move'"));
+    if (TempIAMove.Succeeded()) {
+        IA_Move = TempIAMove.Object;
+    }
+
+    ConstructorHelpers::FObjectFinder<UInputAction> TempIACrouch(TEXT("/Script/EnhancedInput.InputAction'/Game/RGY/Inputs/IA_Crouch.IA_Crouch'"));
+    if (TempIACrouch.Succeeded()) {
+        IA_Crouch = TempIACrouch.Object;
+    }
 }
 
 
@@ -52,7 +62,7 @@ void USMove::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponent
 void USMove::SetupInputBinding(class UEnhancedInputComponent* input)
 {
     // Moving
-    input->BindAction(MoveAction, ETriggerEvent::Triggered, this, &USMove::Move);
+    input->BindAction(IA_Move, ETriggerEvent::Triggered, this, &USMove::Move);
 }
 
 void USMove::Move(const struct FInputActionValue& Value)
@@ -71,7 +81,7 @@ void USMove::Move(const struct FInputActionValue& Value)
         // get right vector 
         //const FVector RightDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
 
-        FVector dir = me->GetFollowCamera()->GetForwardVector() * MovementVector.Y + me->GetFollowCamera()->GetRightVector() * MovementVector.X;
+        FVector dir = me->GetFollowCamera()->GetForwardVector() * MovementVector.X + me->GetFollowCamera()->GetRightVector() * MovementVector.Y;
 
         // add movement 
         me->AddMovementInput(FVector(dir.X, dir.Y, 0.0f).GetSafeNormal());

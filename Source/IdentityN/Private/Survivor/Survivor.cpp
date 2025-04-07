@@ -38,6 +38,17 @@ ASurvivor::ASurvivor()
     FollowCamera->bUsePawnControlRotation = false;
 
     MoveComp = CreateDefaultSubobject<USMove>(TEXT("MoveComp"));
+
+
+    ConstructorHelpers::FObjectFinder<UInputMappingContext> TempIMC(TEXT("/Script/EnhancedInput.InputMappingContext'/Game/RGY/Inputs/IMC_Survivor.IMC_Survivor'"));
+    if (TempIMC.Succeeded()) {
+        IMC_Survivor = TempIMC.Object;
+    }
+
+    ConstructorHelpers::FObjectFinder<UInputAction> TempIALook(TEXT("/Script/EnhancedInput.InputAction'/Game/ThirdPerson/Input/Actions/IA_Look.IA_Look'"));
+    if (TempIALook.Succeeded()) {
+        IA_Look = TempIALook.Object;
+    }
 }
 
 // Called when the game starts or when spawned
@@ -71,7 +82,7 @@ void ASurvivor::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
         MoveComp->SetupInputBinding(input);
 
         // Looking
-        input->BindAction(LookAction, ETriggerEvent::Triggered, this, &ASurvivor::Look);
+        input->BindAction(IA_Look, ETriggerEvent::Triggered, this, &ASurvivor::Look);
     }
 }
 
@@ -84,9 +95,15 @@ void ASurvivor::NotifyControllerChanged()
     {
         if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
         {
-            Subsystem->AddMappingContext(DefaultMappingContext, 1);
+            Subsystem->AddMappingContext(IMC_Survivor, 1);
         }
     }
+}
+
+float ASurvivor::TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+{
+    HP -= Damage;
+
 }
 
 void ASurvivor::Look(const FInputActionValue& Value)
