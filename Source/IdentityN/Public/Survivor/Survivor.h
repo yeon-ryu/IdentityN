@@ -49,14 +49,14 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
     class UInputAction* LookAction;
 
-private:
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Survivor, meta = (AllowPrivateAccess = "true"))
+protected:
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Survivor)
     int32 PlayerId = -1;
 
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Survivor, meta = (AllowPrivateAccess = "true"))
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Survivor)
     float MaxHP = 2.0f;
 
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Survivor, meta = (AllowPrivateAccess = "true"))
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Survivor)
     float HP = MaxHP;
     
     // 생존자 상태 Enum 으로 만들고 준 후 public 에서 Get 으로 조회 가능하도록
@@ -68,9 +68,10 @@ public:
     FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
     /** Returns FollowCamera subobject **/
     FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
+    
+    FORCEINLINE int32 GetPlayerId() const { return PlayerId; }
 
 protected:
     /** Called for looking input */
     void Look(const struct FInputActionValue& Value);
-
 };

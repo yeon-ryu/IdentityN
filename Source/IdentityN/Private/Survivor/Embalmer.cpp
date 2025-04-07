@@ -5,6 +5,8 @@
 
 AEmbalmer::AEmbalmer()
 {
+    PlayerId = 1;
+
     ConstructorHelpers::FObjectFinder<USkeletalMesh> TempMesh(TEXT("/Script/Engine.SkeletalMesh'/Game/RGY/Modelings/embalmer/character-skeleton.character-skeleton'"));
 
     if (TempMesh.Succeeded()) {
