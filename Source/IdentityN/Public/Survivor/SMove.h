@@ -47,6 +47,8 @@ public:
 
     /** Called for movement input */
     void Move(const struct FInputActionValue& Value);
+    
+    void CrouchToggle(const struct FInputActionValue& Value);
 
 private:
     void SetMoveData();

@@ -9,8 +9,8 @@
 #include "Camera/CameraComponent.h"
 #include "../../../../Plugins/EnhancedInput/Source/EnhancedInput/Public/InputAction.h"
 #include "UObject/ConstructorHelpers.h"
+#include "Survivor/SAnimInstance.h"
 
-// Sets default values for this component's properties
 USMove::USMove()
 {
     // 액터에 있으니 컴포넌트에는 없어도 되지 않나? -> Tick 안도는 문제 발생하면 주석 해제
@@ -24,15 +24,13 @@ void USMove::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// ...
     me = Cast<ASurvivor>(GetOwner());
     if (me == nullptr) return;
 
     MoveComp = me->GetCharacterMovement();
 
-    // Configure character movement
-    MoveComp->bOrientRotationToMovement = true; // Character moves in the direction of input...	
-    MoveComp->RotationRate = FRotator(0.0f, 500.0f, 0.0f); // ...at this rotation rate
+    MoveComp->bOrientRotationToMovement = true;
+    MoveComp->RotationRate = FRotator(0.0f, 500.0f, 0.0f); 
     MoveComp->GetNavAgentPropertiesRef().bCanCrouch = true;
 
     MoveComp->MinAnalogWalkSpeed = 20.f;
@@ -41,7 +39,7 @@ void USMove::BeginPlay()
 
     SetMoveData();
 
-    //ConstructorHelpers::FObjectFinder<UInputAction> TempIAMove(TEXT("/Script/EnhancedInput.InputAction'/Game/ThirdPerson/Input/Actions/IA_Move.IA_Move'"));
+    //ConstructorHelpers::FObjectFinder<UInputAction> TempIAMove(TEXT("/Script/EnhancedInput.InputAction'/Game/RGY/Inputs/IA_SMove.IA_SMove'"));
     //if (TempIAMove.Succeeded()) {
     //    IA_Move = TempIAMove.Object;
     //}
@@ -52,19 +50,16 @@ void USMove::BeginPlay()
     //}
 }
 
-
-// Called every frame
 void USMove::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	// ...
 }
 
 void USMove::SetupInputBinding(class UEnhancedInputComponent* input)
 {
-    // Moving
     input->BindAction(IA_Move, ETriggerEvent::Triggered, this, &USMove::Move);
+    input->BindAction(IA_Crouch, ETriggerEvent::Started, this, &USMove::CrouchToggle);
 }
 
 void USMove::Move(const struct FInputActionValue& Value)
@@ -73,22 +68,24 @@ void USMove::Move(const struct FInputActionValue& Value)
 
     if (me->Controller != nullptr)
     {
-        // find out which way is forward
-        //const FRotator Rotation = me->Controller->GetControlRotation();
-        //const FRotator YawRotation(0, Rotation.Yaw, 0);
-
-        // get forward vector
-        //const FVector ForwardDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
-        
-        // get right vector 
-        //const FVector RightDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
-
         FVector dir = me->GetFollowCamera()->GetForwardVector() * MovementVector.X + me->GetFollowCamera()->GetRightVector() * MovementVector.Y;
 
-        // add movement 
         me->AddMovementInput(FVector(dir.X, dir.Y, 0.0f).GetSafeNormal());
-        //me->AddMovementInput(ForwardDirection, MovementVector.Y);
-        //me->AddMovementInput(RightDirection, MovementVector.X);
+    }
+}
+
+void USMove::CrouchToggle(const struct FInputActionValue& Value)
+{
+    if(me->bCrawl) return;
+
+    bCrouch = !bCrouch;
+    me->AnimInstance->bCrouch = bCrouch;
+
+    if (bCrouch) {
+        me->Crouch();
+    }
+    else {
+        me->UnCrouch();
     }
 }
 

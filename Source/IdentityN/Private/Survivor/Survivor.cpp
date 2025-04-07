@@ -13,6 +13,7 @@
 #include "../../../../Plugins/EnhancedInput/Source/EnhancedInput/Public/InputMappingContext.h"
 #include "../../../../Plugins/EnhancedInput/Source/EnhancedInput/Public/InputAction.h"
 #include "UObject/ConstructorHelpers.h"
+#include "Survivor/SAnimInstance.h"
 
 // Sets default values
 ASurvivor::ASurvivor()
@@ -65,7 +66,10 @@ void ASurvivor::BeginPlay()
         auto CameraManager = pc->PlayerCameraManager;
         CameraManager->ViewPitchMin = -15.0f;
         CameraManager->ViewPitchMax = 15.0f;
+    }
 
+    if(GetMesh()->GetAnimInstance()) {
+        AnimInstance = Cast<USAnimInstance>(GetMesh()->GetAnimInstance());
     }
 }
 

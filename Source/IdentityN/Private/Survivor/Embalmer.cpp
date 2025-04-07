@@ -2,6 +2,8 @@
 
 
 #include "Survivor/Embalmer.h"
+#include "Survivor/SAnimInstance.h"
+#include "Survivor/EmbalmerAnim.h"
 
 AEmbalmer::AEmbalmer()
 {
@@ -18,9 +20,18 @@ AEmbalmer::AEmbalmer()
         UE_LOG(LogTemp, Error, TEXT("Embalmer SkeletalMesh loding fail."));
     }
     GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+
+    ConstructorHelpers::FClassFinder<USAnimInstance> TempAnimInst(TEXT("/Script/Engine.AnimBlueprint'/Game/RGY/Blueprints/ABP_Embalmer.ABP_Embalmer_C'"));
+
+    if (TempAnimInst.Succeeded()) {
+        GetMesh()->SetAnimInstanceClass(TempAnimInst.Class);
+    }
 }
 
 void AEmbalmer::BeginPlay()
 {
     Super::BeginPlay();
+
+    AnimInstance = Cast<UEmbalmerAnim>(GetMesh()->GetAnimInstance());
 }

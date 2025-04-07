@@ -31,7 +31,9 @@ public:
 public:
 	UPROPERTY( EditAnywhere )
 	class USMove* MoveComp;
-
+    
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+	class USAnimInstance* AnimInstance;
 private:
 	/** Camera boom positioning the camera behind the character */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
@@ -49,6 +51,10 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
     class UInputAction* IA_Look;
 
+public:
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Survivor)
+    bool bCrawl = false;
+
 protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Survivor)
     int32 PlayerId = -1;
@@ -58,9 +64,6 @@ protected:
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Survivor)
     float HP = MaxHP;
-
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Survivor)
-    bool bCrawl = false;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Survivor)
     bool CrawlTime = 0.0f;
