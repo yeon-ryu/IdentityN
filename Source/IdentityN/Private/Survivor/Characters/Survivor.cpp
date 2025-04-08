@@ -68,7 +68,7 @@ void ASurvivor::BeginPlay()
         CameraManager->ViewPitchMax = 15.0f;
     }
 
-    if(AnimInstance == nullptr) {
+    if(AnimInstance == nullptr && GetMesh()->GetAnimInstance()) {
         AnimInstance = Cast<USAnimInstance>(GetMesh()->GetAnimInstance());
     }
 }

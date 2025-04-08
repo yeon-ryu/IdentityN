@@ -16,6 +16,16 @@ USMove::USMove()
     // 액터에 있으니 컴포넌트에는 없어도 되지 않나? -> Tick 안도는 문제 발생하면 주석 해제
 	//PrimaryComponentTick.bCanEverTick = true;
 
+
+    ConstructorHelpers::FObjectFinder<UInputAction> TempIAMove(TEXT("/Script/EnhancedInput.InputAction'/Game/RGY/Inputs/IA_SMove.IA_SMove'"));
+    if (TempIAMove.Succeeded()) {
+        IA_Move = TempIAMove.Object;
+    }
+
+    ConstructorHelpers::FObjectFinder<UInputAction> TempIACrouch(TEXT("/Script/EnhancedInput.InputAction'/Game/RGY/Inputs/IA_Crouch.IA_Crouch'"));
+    if (TempIACrouch.Succeeded()) {
+        IA_Crouch = TempIACrouch.Object;
+    }
 }
 
 
@@ -38,16 +48,6 @@ void USMove::BeginPlay()
     MoveComp->BrakingDecelerationFalling = 1500.0f;
 
     SetMoveData();
-
-    //ConstructorHelpers::FObjectFinder<UInputAction> TempIAMove(TEXT("/Script/EnhancedInput.InputAction'/Game/RGY/Inputs/IA_SMove.IA_SMove'"));
-    //if (TempIAMove.Succeeded()) {
-    //    IA_Move = TempIAMove.Object;
-    //}
-
-    //ConstructorHelpers::FObjectFinder<UInputAction> TempIACrouch(TEXT("/Script/EnhancedInput.InputAction'/Game/RGY/Inputs/IA_Crouch.IA_Crouch'"));
-    //if (TempIACrouch.Succeeded()) {
-    //    IA_Crouch = TempIACrouch.Object;
-    //}
 }
 
 void USMove::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
