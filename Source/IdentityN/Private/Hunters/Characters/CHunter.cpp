@@ -2,7 +2,9 @@
 #include "Global.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
+#include "Hunters/Components/CStateComponent.h"
 #include "Hunters/Components/CMovementComponent.h"
+#include "Hunters/Components/CWeaponComponent.h"
 #include "InputMappingContext.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
@@ -41,6 +43,9 @@ void ACHunter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
     {
         // Movement
         Movement->OnBindEnhancedInputSystem(EnhancedInput);
+
+        // Movement
+        Weapon->OnBindEnhancedInputSystem(EnhancedInput);
     }
 
 }
@@ -66,7 +71,13 @@ void ACHunter::InitializeCharacters()
     // Mapping Context
     CHelpers::GetAsset<UInputMappingContext>(&MappingContext, TEXT("/Script/EnhancedInput.InputMappingContext'/Game/PJS/Inputs/IMC_Hunter.IMC_Hunter'"));
 
+    // State
+    CHelpers::CreateActorComponent<UCStateComponent>(this, &State, "State");
+
     // Movement
     CHelpers::CreateActorComponent<UCMovementComponent>(this, &Movement, "Movement");
+
+    // Weapon
+    CHelpers::CreateActorComponent<UCWeaponComponent>(this, &Weapon, "Weapon");
 
 }
