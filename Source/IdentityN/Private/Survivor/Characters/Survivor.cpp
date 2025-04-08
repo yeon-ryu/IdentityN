@@ -14,6 +14,7 @@
 #include "../../../../Plugins/EnhancedInput/Source/EnhancedInput/Public/InputAction.h"
 #include "UObject/ConstructorHelpers.h"
 #include "Survivor/Animations/SAnimInstance.h"
+#include "IdentityNGameMode.h"
 
 // Sets default values
 ASurvivor::ASurvivor()
@@ -31,7 +32,7 @@ ASurvivor::ASurvivor()
     // Create a camera boom (pulls in towards the player if there is a collision)
     CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
     CameraBoom->SetupAttachment(RootComponent);
-    CameraBoom->TargetArmLength = 250.0f; // The camera follows at this distance behind the character
+    CameraBoom->TargetArmLength = 300.0f; // The camera follows at this distance behind the character
     CameraBoom->SetRelativeLocation(FVector(0, 0, 40));
     CameraBoom->bUsePawnControlRotation = true; // Rotate the arm based on the controller
 
@@ -71,6 +72,11 @@ void ASurvivor::BeginPlay()
     if(AnimInstance == nullptr && GetMesh()->GetAnimInstance()) {
         AnimInstance = Cast<USAnimInstance>(GetMesh()->GetAnimInstance());
     }
+
+
+    auto gm = Cast<AIdentityNGameMode>(GetWorld()->GetAuthGameMode());
+    SurvivorData = gm->SurvivorDataMap.Find(Id);
+    SetInitData();
 }
 
 // Called every frame
@@ -109,7 +115,25 @@ void ASurvivor::NotifyControllerChanged()
 
 float ASurvivor::TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
+    if(bCrawl) return HP;
+
     HP -= Damage;
+
+    if (HP <= 0) {
+        bCrawl = true;
+        AnimInstance->bCrawl = true;
+        CameraBoom->SetRelativeLocation(FVector(0, 0, 0));
+
+        if (MoveComp->bCrouch) {
+            MoveComp->bCrouch = false;
+            AnimInstance->bCrouch = false;
+        }
+    }
+    else if (bCrawl) {
+        bCrawl = false;
+        AnimInstance->bCrawl = false;
+        CameraBoom->SetRelativeLocation(FVector(0, 0, 40));
+    }
 
     return HP;
 }
@@ -124,5 +148,12 @@ void ASurvivor::Look(const FInputActionValue& Value)
         AddControllerYawInput(LookAxisVector.X);
         AddControllerPitchInput(LookAxisVector.Y);
     }
+}
+
+void ASurvivor::SetInitData()
+{
+    if (SurvivorData == nullptr) return;
+
+    Name = SurvivorData->name;
 }
 

@@ -10,12 +10,12 @@
 #include "../../../../Plugins/EnhancedInput/Source/EnhancedInput/Public/InputAction.h"
 #include "UObject/ConstructorHelpers.h"
 #include "Survivor/Animations/SAnimInstance.h"
+#include "Survivor/Data/SurvivorStruct.h"
+#include "Utilities/CLog.h"
 
 USMove::USMove()
 {
-    // 액터에 있으니 컴포넌트에는 없어도 되지 않나? -> Tick 안도는 문제 발생하면 주석 해제
-	//PrimaryComponentTick.bCanEverTick = true;
-
+	PrimaryComponentTick.bCanEverTick = true;
 
     ConstructorHelpers::FObjectFinder<UInputAction> TempIAMove(TEXT("/Script/EnhancedInput.InputAction'/Game/RGY/Inputs/IA_SMove.IA_SMove'"));
     if (TempIAMove.Succeeded()) {
@@ -66,6 +66,13 @@ void USMove::Move(const struct FInputActionValue& Value)
 {
     FVector2D MovementVector = Value.Get<FVector2D>();
 
+    if (me->bCrawl && MoveComp->MaxWalkSpeed != crawlSpeed) {
+        MoveComp->MaxWalkSpeed = crawlSpeed;
+    }
+    else if (!me->bCrawl && MoveComp->MaxWalkSpeed != runSpeed) {
+        MoveComp->MaxWalkSpeed = runSpeed;
+    }
+
     if (me->Controller != nullptr)
     {
         FVector dir = me->GetFollowCamera()->GetForwardVector() * MovementVector.X + me->GetFollowCamera()->GetRightVector() * MovementVector.Y;
@@ -91,11 +98,19 @@ void USMove::CrouchToggle(const struct FInputActionValue& Value)
 
 void USMove::SetMoveData()
 {
-    // 서버에 있는 csv 에서 읽어온 데이터 중 PlayerId 로 데이터 가져와서 세팅
+    // 서버에 있는 csv 에서 읽어온 데이터 중 SurvivorId 로 데이터 가져와서 세팅
+    auto data = me->SurvivorData;
+    
+    if(data == nullptr) {
+        // 값 못 가져왔을 때 디폴트 값
+        MoveComp->MaxWalkSpeed = runSpeed;
+        MoveComp->MaxWalkSpeedCrouched = 114.f;
+        return;
+    }
 
-
-    // 값 못 가져왔을 때 디폴트 값
-    MoveComp->MaxWalkSpeed = 380.f;
-    MoveComp->MaxWalkSpeedCrouched = 114.f;
+    MoveComp->MaxWalkSpeed = data->runSpeed;
+    MoveComp->MaxWalkSpeedCrouched = data->crouchSpeed;
+    runSpeed = data->runSpeed;
+    crawlSpeed = data->crawlSpeed;
 }
 

@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "../Data/SurvivorEnum.h"
+#include "../Data/SurvivorStruct.h"
 #include "Survivor.generated.h"
 
 UCLASS()
@@ -32,8 +34,10 @@ public:
 	UPROPERTY( EditAnywhere )
 	class USMove* MoveComp;
     
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Anim, meta = (AllowPrivateAccess = "true"))
 	class USAnimInstance* AnimInstance;
+
+    
 private:
 	/** Camera boom positioning the camera behind the character */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
@@ -53,11 +57,30 @@ private:
 
 public:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Survivor)
+    ESurvivorState State = ESurvivorState::IDLE;
+
+    FSurvivorData* SurvivorData;
+
+    // 의자 게이지 : 0 보다 크고 50미만일 때 의자에 다시 앉으면 시작을 50으로 세팅, 50이상일 때 다시 앉으면 바로 100 으로
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Survivor)
+    float SitGauge = 0.0f;
+
+    // 쓰러짐 상태일때 사망까지 게이지
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Survivor)
+    float DeadGauge = 0.0f;
+
+    // 치료 게이지
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Survivor)
+    float HealGauge = 0.0f;
+
     bool bCrawl = false;
 
 protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Survivor)
-    int32 PlayerId = -1;
+    int32 Id = -1;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Survivor)
+    FString Name = "";
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Survivor)
     float MaxHP = 2.0f;
@@ -65,10 +88,9 @@ protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Survivor)
     float HP = MaxHP;
 
+    // 과다 출혈로 죽을 때까지 남은 시간
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Survivor)
-    bool CrawlTime = 0.0f;
-    
-    // 생존자 상태 Enum 으로 만들고 준 후 public 에서 Get 으로 조회 가능하도록
+    bool CrawlDeadLineTime = 0.0f;
 
 public:
     /** Returns CameraBoom subobject **/
@@ -76,11 +98,16 @@ public:
     /** Returns FollowCamera subobject **/
     FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
     
-    FORCEINLINE int32 GetPlayerId() const { return PlayerId; }
+    FORCEINLINE int32 GetSurvivorId() const { return Id; }
+
+    FORCEINLINE FString GetSurvivorName() const { return Name; }
 
     virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 
 protected:
     /** Called for looking input */
     void Look(const struct FInputActionValue& Value);
+
+private:
+    void SetInitData();
 };

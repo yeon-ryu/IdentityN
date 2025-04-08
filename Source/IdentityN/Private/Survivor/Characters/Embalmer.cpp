@@ -8,10 +8,11 @@
 AEmbalmer::AEmbalmer()
 {
     // 캐릭터 식별자
-    PlayerId = 1;
+    Id = 1;
+    Name = "Embalmer"; // 이 라인 csv 데이터 추가 후 삭제
 
     // 캐릭터 메시
-    ConstructorHelpers::FObjectFinder<USkeletalMesh> TempMesh(TEXT("/Script/Engine.SkeletalMesh'/Game/RGY/Modelings/embalmer/character-skeleton.character-skeleton'"));
+    ConstructorHelpers::FObjectFinder<USkeletalMesh> TempMesh(TEXT("//Script/Engine.SkeletalMesh'/Game/RGY/Modelings/embalmer/embalmer.embalmer'"));
 
     if (TempMesh.Succeeded()) {
         GetMesh()->SetSkeletalMesh(TempMesh.Object);

@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Animation/AnimInstance.h"
+#include "../Data/SurvivorEnum.h"
 #include "SAnimInstance.generated.h"
 
 /**
@@ -17,9 +18,15 @@ class IDENTITYN_API USAnimInstance : public UAnimInstance
 public:
 	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = TPSPlayerAnim)
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = SurvivorAnim)
+    ESurvivorState State = ESurvivorState::IDLE;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = SurvivorAnim)
 	float Speed = 0.0f;
 
-    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category=TPSPlayerAnim)
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category= SurvivorAnim)
 	bool bCrouch = false;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category= SurvivorAnim)
+	bool bCrawl = false;
 };

@@ -42,6 +42,9 @@ private:
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
     class UInputAction* IA_Crouch;
 
+    float runSpeed = 380.0f;
+    float crawlSpeed = 44.0f;
+
 public:
 	void SetupInputBinding(class UEnhancedInputComponent* input);
 
