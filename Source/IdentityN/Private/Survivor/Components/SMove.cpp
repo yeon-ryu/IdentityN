@@ -1,15 +1,15 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Survivor/SMove.h"
-#include "Survivor/Survivor.h"
+#include "Survivor/Components/SMove.h"
+#include "Survivor/Characters/Survivor.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "../../../../Plugins/EnhancedInput/Source/EnhancedInput/Public/EnhancedInputComponent.h"
 #include "../../../../Plugins/EnhancedInput/Source/EnhancedInput/Public/InputActionValue.h"
 #include "Camera/CameraComponent.h"
 #include "../../../../Plugins/EnhancedInput/Source/EnhancedInput/Public/InputAction.h"
 #include "UObject/ConstructorHelpers.h"
-#include "Survivor/SAnimInstance.h"
+#include "Survivor/Animations/SAnimInstance.h"
 
 USMove::USMove()
 {

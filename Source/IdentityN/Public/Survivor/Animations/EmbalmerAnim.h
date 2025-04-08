@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Survivor/SAnimInstance.h"
+#include "Survivor/Animations/SAnimInstance.h"
 #include "EmbalmerAnim.generated.h"
 
 /**

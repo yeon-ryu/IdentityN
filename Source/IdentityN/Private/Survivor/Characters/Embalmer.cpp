@@ -1,14 +1,16 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Survivor/Embalmer.h"
-#include "Survivor/SAnimInstance.h"
-#include "Survivor/EmbalmerAnim.h"
+#include "Survivor/Characters/Embalmer.h"
+#include "Survivor/Animations/SAnimInstance.h"
+#include "Survivor/Animations/EmbalmerAnim.h"
 
 AEmbalmer::AEmbalmer()
 {
+    // 캐릭터 식별자
     PlayerId = 1;
 
+    // 캐릭터 메시
     ConstructorHelpers::FObjectFinder<USkeletalMesh> TempMesh(TEXT("/Script/Engine.SkeletalMesh'/Game/RGY/Modelings/embalmer/character-skeleton.character-skeleton'"));
 
     if (TempMesh.Succeeded()) {
@@ -21,7 +23,7 @@ AEmbalmer::AEmbalmer()
     }
     GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
-
+    // 캐릭터 전용 애니메이션
     ConstructorHelpers::FClassFinder<USAnimInstance> TempAnimInst(TEXT("/Script/Engine.AnimBlueprint'/Game/RGY/Blueprints/ABP_Embalmer.ABP_Embalmer_C'"));
 
     if (TempAnimInst.Succeeded()) {

@@ -1,19 +1,19 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Survivor/Survivor.h"
+#include "Survivor/Characters/Survivor.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 #include "../../../../Plugins/EnhancedInput/Source/EnhancedInput/Public/EnhancedInputComponent.h"
 #include "../../../../Plugins/EnhancedInput/Source/EnhancedInput/Public/EnhancedInputSubsystems.h"
-#include "Survivor/SMove.h"
+#include "Survivor/Components/SMove.h"
 #include "../../../../Plugins/EnhancedInput/Source/EnhancedInput/Public/InputActionValue.h"
 #include "../../../../Plugins/EnhancedInput/Source/EnhancedInput/Public/InputMappingContext.h"
 #include "../../../../Plugins/EnhancedInput/Source/EnhancedInput/Public/InputAction.h"
 #include "UObject/ConstructorHelpers.h"
-#include "Survivor/SAnimInstance.h"
+#include "Survivor/Animations/SAnimInstance.h"
 
 // Sets default values
 ASurvivor::ASurvivor()
@@ -68,7 +68,7 @@ void ASurvivor::BeginPlay()
         CameraManager->ViewPitchMax = 15.0f;
     }
 
-    if(GetMesh()->GetAnimInstance()) {
+    if(AnimInstance == nullptr) {
         AnimInstance = Cast<USAnimInstance>(GetMesh()->GetAnimInstance());
     }
 }

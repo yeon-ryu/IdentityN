@@ -1,8 +1,8 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Survivor/SAnimInstance.h"
-#include "Survivor/Survivor.h"
+#include "Survivor/Animations/SAnimInstance.h"
+#include "Survivor/Characters/Survivor.h"
 
 void USAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 {
