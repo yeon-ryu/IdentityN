@@ -24,9 +24,19 @@ private:
     UPROPERTY(EditDefaultsOnly, Category = "EnhancedInput")
     class UInputAction* IA_Look;
 
+public:
+    FORCEINLINE bool CanMove() { return bMovable; }
+
+    FORCEINLINE float GetBaseWalkSpeed() { return Speed[(int32)ESpeedType::BaseWalk]; }
+    FORCEINLINE float GetSpearFishingSpeed() { return Speed[(int32)ESpeedType::Spearfishing]; }
+
+    FORCEINLINE bool GetFixedCamera() { return bFixedCamera; }
+    FORCEINLINE void EnableFixedCamera() { bFixedCamera = true; }
+    FORCEINLINE void DisableFixedCamera() { bFixedCamera = false; }
+
 private:
     UPROPERTY()
-    float Speed[(int32)ESpeedType::MAX] = { 200, 450 };
+    float Speed[(int32)ESpeedType::MAX] = { 300, 450 };
 
 private:
     UPROPERTY(EditAnywhere, Category = "CameraSpeed")
@@ -65,5 +75,6 @@ private:
 
 private:
     bool bMovable = true;
+    bool bFixedCamera;
 
 };
