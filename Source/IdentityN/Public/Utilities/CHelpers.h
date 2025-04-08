@@ -3,6 +3,10 @@
 #include "CoreMinimal.h"
 
 #include "GameFramework/Character.h"
+#include "Particles/ParticleSystem.h"
+#include "NiagaraSystem.h"
+#include "NiagaraFunctionLibrary.h"
+#include "Components/CapsuleComponent.h"
 
 #define CheckTrue(x) { if(x == true) return; }
 #define CheckTrueResult(x, y) { if(x == true) return y; }
@@ -115,6 +119,48 @@ public:
     static void AttachTo(AActor* InActor, USceneComponent* InParent, FName InSocketName)
     {
         InActor->AttachToComponent(InParent, FAttachmentTransformRules(EAttachmentRule::KeepRelative, true), InSocketName);
+    }
+
+    static void PlayEffect(UWorld* InWorld, UFXSystemAsset* InAsset, const FTransform& InTransform, USkeletalMeshComponent* InMesh = nullptr, FName InSocketName = NAME_None)
+    {
+        UParticleSystem* particle = Cast<UParticleSystem>(InAsset);
+        UNiagaraSystem* niagara = Cast<UNiagaraSystem>(InAsset);
+
+        FVector location = InTransform.GetLocation();
+        FRotator rotation = FRotator(InTransform.GetRotation());
+        FVector scale = InTransform.GetScale3D();
+
+
+        if (!!InMesh)
+        {
+            if (!!particle)
+            {
+                UGameplayStatics::SpawnEmitterAttached(particle, InMesh, InSocketName, location, rotation, scale);
+
+                return;
+            }
+
+            if (!!niagara)
+            {
+                UNiagaraFunctionLibrary::SpawnSystemAttached(niagara, InMesh, InSocketName, location, rotation, scale, EAttachLocation::KeepRelativeOffset, true, ENCPoolMethod::None);
+
+                return;
+            }
+        }
+
+        if (!!particle)
+        {
+            UGameplayStatics::SpawnEmitterAtLocation(InWorld, particle, InTransform);
+
+            return;
+        }
+
+        if (!!niagara)
+        {
+            UNiagaraFunctionLibrary::SpawnSystemAtLocation(InWorld, niagara, location, rotation, scale);
+
+            return;
+        }
     }
 
 };

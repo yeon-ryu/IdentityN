@@ -18,7 +18,13 @@ private:
 
 private:
     UPROPERTY(VisibleAnywhere, Category = "Components")
+    class UCStateComponent* State;
+
+    UPROPERTY(VisibleAnywhere, Category = "Components")
     class UCMovementComponent* Movement;
+
+    UPROPERTY(VisibleAnywhere, Category = "Components")
+    class UCWeaponComponent* Weapon;
 
 private:
     UPROPERTY(EditDefaultsOnly, Category = "EnhancedInput")

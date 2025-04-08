@@ -18,4 +18,8 @@ private:
     UPROPERTY(VisibleAnywhere, meta = (AllowPrivateAccess = true))
     class ACharacter* OwnerCharacter = nullptr;
 
+protected:
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Animation")
+    float Speed;
+
 };

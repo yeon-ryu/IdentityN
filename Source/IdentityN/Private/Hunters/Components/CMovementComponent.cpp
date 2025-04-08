@@ -89,6 +89,8 @@ void UCMovementComponent::OffMovable()
 
 void UCMovementComponent::OnMovement(const FInputActionValue& InVal)
 {
+    CheckFalse(bMovable);
+
     // 캐릭터의 정면 방향을 가져오기 위해 컨트롤러의 회전 값을 구해서 Z축만을 사용
     FRotator rot = FRotator(0, OwnerCharacter->GetControlRotation().Yaw, 0);
 
@@ -102,6 +104,8 @@ void UCMovementComponent::OnMovement(const FInputActionValue& InVal)
 
 void UCMovementComponent::OnLook(const FInputActionValue& InVal)
 {
+    CheckTrue(bFixedCamera);
+
     // Horizontal
     OwnerCharacter->AddControllerYawInput(InVal.Get<FVector2D>().X * HorizontalLook);
 
