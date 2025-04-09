@@ -134,6 +134,7 @@ void USMove::BuffSpeed(float per, int seconds)
     MoveComp->MaxWalkSpeed = diff;
 
     // 타이머 seconds 시간만큼 돌리고 종료되면 곱한만큼 나눠준다 -> 버프 중첩 대비
+
 }
 
 void USMove::SetMoveData()

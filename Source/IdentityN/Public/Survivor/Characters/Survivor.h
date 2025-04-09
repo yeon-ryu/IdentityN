@@ -31,12 +31,14 @@ public:
     virtual void NotifyControllerChanged() override;
 
 public:
-	UPROPERTY( EditAnywhere )
-	class USMove* MoveComp;
-    
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Anim, meta = (AllowPrivateAccess = "true"))
 	class USAnimInstance* AnimInstance;
 
+	UPROPERTY( EditAnywhere )
+	class USMove* MoveComp;
+
+    UPROPERTY( EditAnywhere )
+	class USBuff* BuffComp;
     
 private:
 	/** Camera boom positioning the camera behind the character */

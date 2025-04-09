@@ -16,6 +16,7 @@
 #include "Survivor/Animations/SAnimInstance.h"
 #include "IdentityNGameMode.h"
 #include "Utilities/CLog.h"
+#include "Survivor/Components/SBuff.h"
 
 // Sets default values
 ASurvivor::ASurvivor()
@@ -44,6 +45,7 @@ ASurvivor::ASurvivor()
     FollowCamera->bUsePawnControlRotation = false;
 
     MoveComp = CreateDefaultSubobject<USMove>(TEXT("MoveComp"));
+    BuffComp = CreateDefaultSubobject<USBuff>(TEXT("BuffComp"));
 
 
     ConstructorHelpers::FObjectFinder<UInputMappingContext> TempIMC(TEXT("/Script/EnhancedInput.InputMappingContext'/Game/RGY/Inputs/IMC_Survivor.IMC_Survivor'"));
@@ -175,9 +177,8 @@ float ASurvivor::TakeDamage(float Damage, struct FDamageEvent const& DamageEvent
         }
     }
 
-    // 4. 피격 이동 가속 (쓰러짐 상태에서도 피격 이동 가속은 적용되어 있다 : 아드각)
-    // 아래 인자값 (5퍼센트만큼 2초간 이속 증가) 변수로 받도록
-    MoveComp->BuffSpeed(5, 2);
+    // 4. 피격 이동 가속 (쓰러짐 상태에서도 피격 이동 가속은 적용되어 있다 : 아드각) + 피격시 버프 적용
+    BuffComp->DamagedBuff();
 
     CLog::Print(HP);
   
