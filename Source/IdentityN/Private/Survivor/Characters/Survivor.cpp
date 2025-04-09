@@ -84,6 +84,16 @@ void ASurvivor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+    if (bCrawl) {
+        CrawlCurrentTime += DeltaTime;
+        
+        if (CrawlCurrentTime >= CrawlDeadTime) {
+            // 과다출혈 사망 탈락 처리
+
+            CrawlCurrentTime = 0.0f;
+            bCrawl = false;
+        }
+    }
 }
 
 // Called to bind functionality to input
@@ -115,25 +125,49 @@ void ASurvivor::NotifyControllerChanged()
 
 float ASurvivor::TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
-    if(bCrawl) return HP;
+    // 1. 데미지 받을 수 있는 상황인지 체크
+    bool bDamage = IsTakeDamage();
+    if(!bDamage) return HP;
 
+    // 2. 공포의 일격 여부 체크
+    bool bAction = IsTakeAction();
+    if (bAction) {
+        // 공포의 일격 적용
+
+    }
+
+    // 3. 데미지 적용
     HP -= Damage;
 
+    // 3. HP 가 0 일 경우 쓰러짐
     if (HP <= 0) {
+        // 과다출혈 타이머 초기화
+        CrawlCurrentTime = 0.0f;
+
         bCrawl = true;
-        AnimInstance->bCrawl = true;
-        CrawlDeadLineTime = 0.0f;
+        //AnimInstance->bCrawl = true;
 
         if (MoveComp->bCrouch) {
             MoveComp->bCrouch = false;
             AnimInstance->bCrouch = false;
         }
-    }
-    else if (bCrawl) {
-        bCrawl = false;
-        AnimInstance->bCrawl = false;
+    } else {
+        if (bCrawl) {
+            bCrawl = false;
+            //AnimInstance->bCrawl = false;
+        }
+        else if (MoveComp->bCrouch) {
+            // 피격 시 웅크림 상태 해제
+            MoveComp->ChangeCrouch(false);
+        }
     }
 
+    // 4. 피격 이동 가속 (쓰러짐 상태에서도 피격 이동 가속은 적용되어 있다 : 아드각)
+    // 아래 인자값 (5퍼센트만큼 2초간 이속 증가) 변수로 받도록
+    MoveComp->BuffSpeed(5, 2);
+
+    // 5. 잠시간 무적 상태?
+  
     return HP;
 }
 
@@ -147,6 +181,27 @@ void ASurvivor::Look(const FInputActionValue& Value)
         AddControllerYawInput(LookAxisVector.X);
         AddControllerPitchInput(LookAxisVector.Y);
     }
+}
+
+bool ASurvivor::IsTakeDamage()
+{
+    // 무적 시간, 쓰러짐 상태, DAMAGED, BALLOONED, SIT
+    if (bInvindibility || bCrawl) return false;
+    if(State == ESurvivorState::READY || State == ESurvivorState::DAMAGED
+        || State == ESurvivorState::BALLOONED || State == ESurvivorState::SIT) return false;
+
+    return true;
+}
+
+bool ASurvivor::IsTakeAction()
+{
+    // 행동 중인가 여부
+    if (State != ESurvivorState::READY && State != ESurvivorState::IDLE
+        && State != ESurvivorState::RUN && State != ESurvivorState::DAMAGED) {
+        return true;
+    }
+
+    return false;
 }
 
 void ASurvivor::SetInitData()

@@ -33,6 +33,7 @@ private:
 
 public:
     bool bCrouch = false;
+    bool bCrawl = false;
 
 private:
     /** Move Input Action */
@@ -43,6 +44,7 @@ private:
     class UInputAction* IA_Crouch;
 
     float runSpeed = 380.0f;
+    float crouchSpeed = 114.0f;
     float crawlSpeed = 44.0f;
 
 public:
@@ -52,6 +54,14 @@ public:
     void Move(const struct FInputActionValue& Value);
     
     void CrouchToggle(const struct FInputActionValue& Value);
+
+    void ChangeCrouch(bool crouchState);
+
+    void ChangeCrawl(bool crawlState);
+
+    void ResetSpeed();
+
+    void BuffSpeed(float per, int seconds);
 
 private:
     void SetMoveData();

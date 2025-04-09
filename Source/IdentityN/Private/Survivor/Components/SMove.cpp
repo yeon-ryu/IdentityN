@@ -54,6 +54,12 @@ void USMove::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponent
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
+    if (!bCrawl && me->bCrawl) {
+        ChangeCrawl(true);
+    }
+    else if (bCrawl && !me->bCrawl) {
+        ChangeCrawl(false);
+    }
 }
 
 void USMove::SetupInputBinding(class UEnhancedInputComponent* input)
@@ -65,13 +71,6 @@ void USMove::SetupInputBinding(class UEnhancedInputComponent* input)
 void USMove::Move(const struct FInputActionValue& Value)
 {
     FVector2D MovementVector = Value.Get<FVector2D>();
-
-    if (me->bCrawl && MoveComp->MaxWalkSpeed != crawlSpeed) {
-        MoveComp->MaxWalkSpeed = crawlSpeed;
-    }
-    else if (!me->bCrawl && MoveComp->MaxWalkSpeed != runSpeed) {
-        MoveComp->MaxWalkSpeed = runSpeed;
-    }
 
     if (me->Controller != nullptr)
     {
@@ -85,15 +84,56 @@ void USMove::CrouchToggle(const struct FInputActionValue& Value)
 {
     if(me->bCrawl) return;
 
-    bCrouch = !bCrouch;
-    me->AnimInstance->bCrouch = bCrouch;
+    ChangeCrouch(!bCrouch);
+}
 
-    if (bCrouch) {
+void USMove::ChangeCrouch(bool crouchState)
+{
+    bCrouch = crouchState;
+    me->AnimInstance->bCrouch = crouchState;
+
+    if (crouchState) {
         me->Crouch();
     }
     else {
         me->UnCrouch();
     }
+}
+
+void USMove::ChangeCrawl(bool crawlState)
+{
+    bCrawl = crawlState;
+    me->AnimInstance->bCrawl = crawlState;
+    if(crawlState) {
+        MoveComp->MaxWalkSpeedCrouched = crawlSpeed;
+        me->Crouch();
+    }
+    else {
+        MoveComp->MaxWalkSpeedCrouched = crouchSpeed;
+        me->UnCrouch();
+    }
+}
+
+void USMove::ResetSpeed()
+{
+    // SMove 에 걸린 타이머 전부 종료 (버프들 타이머) 처리
+
+
+    MoveComp->MaxWalkSpeed = runSpeed;
+    if (me->bCrawl) {
+        MoveComp->MaxWalkSpeedCrouched = crawlSpeed;
+    }
+    else {
+        MoveComp->MaxWalkSpeedCrouched = crouchSpeed;
+    }
+}
+
+void USMove::BuffSpeed(float per, int seconds)
+{
+    float diff = MoveComp->MaxWalkSpeed * (1.0f + per / 100.0f);
+    MoveComp->MaxWalkSpeed = diff;
+
+    // 타이머 seconds 시간만큼 돌리고 종료되면 곱한만큼 나눠준다 -> 버프 중첩 대비
 }
 
 void USMove::SetMoveData()
@@ -104,13 +144,14 @@ void USMove::SetMoveData()
     if(data == nullptr) {
         // 값 못 가져왔을 때 디폴트 값
         MoveComp->MaxWalkSpeed = runSpeed;
-        MoveComp->MaxWalkSpeedCrouched = 114.f;
+        MoveComp->MaxWalkSpeedCrouched = crouchSpeed;
         return;
     }
 
-    MoveComp->MaxWalkSpeed = data->runSpeed;
-    MoveComp->MaxWalkSpeedCrouched = data->crouchSpeed;
     runSpeed = data->runSpeed;
+    crouchSpeed = data->crouchSpeed;
     crawlSpeed = data->crawlSpeed;
+    MoveComp->MaxWalkSpeed = runSpeed;
+    MoveComp->MaxWalkSpeedCrouched = crouchSpeed;
 }
 

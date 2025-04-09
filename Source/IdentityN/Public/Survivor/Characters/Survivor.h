@@ -56,24 +56,30 @@ private:
     class UInputAction* IA_Look;
 
 public:
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Survivor)
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Survivor)
     ESurvivorState State = ESurvivorState::IDLE;
 
     FSurvivorData* SurvivorData;
 
     // 의자 게이지 : 0 보다 크고 50미만일 때 의자에 다시 앉으면 시작을 50으로 세팅, 50이상일 때 다시 앉으면 바로 100 으로
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Survivor)
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Survivor)
     float SitGauge = 0.0f;
 
     // 쓰러짐 상태일때 사망까지 게이지
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Survivor)
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Survivor)
     float DeadGauge = 0.0f;
 
     // 치료 게이지
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Survivor)
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Survivor)
     float HealGauge = 0.0f;
 
+    // 쓰러짐 상태 여부
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Survivor)
     bool bCrawl = false;
+
+    // 무적 상태 여부
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Survivor)
+    bool bInvindibility = false;
 
 protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Survivor)
@@ -85,12 +91,16 @@ protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Survivor)
     float MaxHP = 2.0f;
 
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Survivor)
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Survivor)
     float HP = MaxHP;
 
+    // 과다 출혈 사망 시간
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Survivor)
+    float CrawlDeadTime = 60.0f;
+
+private:
     // 과다 출혈로 죽을 때까지 남은 시간
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Survivor)
-    bool CrawlDeadLineTime = 0.0f;
+    float CrawlCurrentTime = 0.0f;
 
 public:
     /** Returns CameraBoom subobject **/
@@ -107,6 +117,10 @@ public:
 protected:
     /** Called for looking input */
     void Look(const struct FInputActionValue& Value);
+
+    bool IsTakeDamage();
+
+    bool IsTakeAction();
 
 private:
     void SetInitData();
