@@ -18,7 +18,8 @@ class IDENTITYN_API USAnimInstance : public UAnimInstance
 public:
 	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
 
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = SurvivorAnim)
+public:
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = SurvivorAnim)
     ESurvivorState State = ESurvivorState::IDLE;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = SurvivorAnim)
@@ -29,4 +30,17 @@ public:
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category= SurvivorAnim)
 	bool bCrawl = false;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category= SurvivorAnim)
+    bool falling = false;
+
+private:
+    class ASurvivor* survivor;
+
+public:
+    UFUNCTION()
+    void AnimNotify_SDamageEnd();
+
+    UFUNCTION()
+    void AnimNotify_SHitFallEnd();
 };

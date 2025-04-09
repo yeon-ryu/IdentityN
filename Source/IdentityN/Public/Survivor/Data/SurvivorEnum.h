@@ -8,17 +8,19 @@ UENUM(BlueprintType)
 enum class ESurvivorState : uint8 {
     READY UMETA(DisplayName = "대기"), 
     IDLE UMETA(DisplayName = "정지"),
-    RUN UMETA(DisplayName = "달리기"),
+    MOVE UMETA(DisplayName = "이동"),
     DAMAGED UMETA(DisplayName = "피격"),
     HEAL UMETA(DisplayName = "치료"),
     DECODE UMETA(DisplayName = "해독"),
     DECODE_FAIL UMETA(DisplayName = "해독실패"),
-    BALLOONED UMETA(DisplayName = "끌려감"),
-    SIT UMETA(DisplayName = "의자앉음"),
+    BALLOONED UMETA(DisplayName = "끌려감"), // UI 표시
+    SIT UMETA(DisplayName = "의자앉음"), // UI 표시
     RESCUE UMETA(DisplayName = "구출"),
     PASS UMETA(DisplayName = "넘어가는중"),
     PULLDOWN UMETA(DisplayName = "판자넘어뜨리는중"),
-    SKILL UMETA(DisplayName = "스킬1")
+    SKILL UMETA(DisplayName = "스킬1"),
+    SUCCESS UMETA(DisplayName = "탈출"), // UI 표시
+    FAIL UMETA(DisplayName = "실종") // UI 표시
 };
 
 /**

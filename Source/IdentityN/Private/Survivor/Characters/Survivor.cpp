@@ -15,6 +15,7 @@
 #include "UObject/ConstructorHelpers.h"
 #include "Survivor/Animations/SAnimInstance.h"
 #include "IdentityNGameMode.h"
+#include "Utilities/CLog.h"
 
 // Sets default values
 ASurvivor::ASurvivor()
@@ -133,14 +134,21 @@ float ASurvivor::TakeDamage(float Damage, struct FDamageEvent const& DamageEvent
     bool bAction = IsTakeAction();
     if (bAction) {
         // 공포의 일격 적용
-
+        Damage = 2.0f;
     }
 
     // 3. 데미지 적용
     HP -= Damage;
+    if(HP < 0) HP = 0.0f;
 
     // 3. HP 가 0 일 경우 쓰러짐
-    if (HP <= 0) {
+    if (HP == 0) {
+        // 날아가서 쓰러지는 애니메이션
+        // 해당 애니메이션이 종료될 경우 falling 이 false 가 되고 그러면 crawl 상태로 움직일 수 있게 됨
+        AnimInstance->falling = true;
+        FVector dir = GetActorLocation() - DamageCauser->GetActorLocation();
+        LaunchCharacter(dir * 100, false, false);
+
         // 과다출혈 타이머 초기화
         CrawlCurrentTime = 0.0f;
 
@@ -152,6 +160,11 @@ float ASurvivor::TakeDamage(float Damage, struct FDamageEvent const& DamageEvent
             AnimInstance->bCrouch = false;
         }
     } else {
+        // 대미지 애니메이션
+        // 대미지 애니메이션 종료 후 Idle 상태로 변경되어 움직일 수 있게 됨
+        State = ESurvivorState::DAMAGED;
+        AnimInstance->State = ESurvivorState::DAMAGED;
+
         if (bCrawl) {
             bCrawl = false;
             //AnimInstance->bCrawl = false;
@@ -166,7 +179,7 @@ float ASurvivor::TakeDamage(float Damage, struct FDamageEvent const& DamageEvent
     // 아래 인자값 (5퍼센트만큼 2초간 이속 증가) 변수로 받도록
     MoveComp->BuffSpeed(5, 2);
 
-    // 5. 잠시간 무적 상태?
+    CLog::Print(HP);
   
     return HP;
 }
@@ -186,9 +199,9 @@ void ASurvivor::Look(const FInputActionValue& Value)
 bool ASurvivor::IsTakeDamage()
 {
     // 무적 시간, 쓰러짐 상태, DAMAGED, BALLOONED, SIT
+    if (State == ESurvivorState::READY || State == ESurvivorState::SUCCESS || State == ESurvivorState::FAIL) return false;
     if (bInvindibility || bCrawl) return false;
-    if(State == ESurvivorState::READY || State == ESurvivorState::DAMAGED
-        || State == ESurvivorState::BALLOONED || State == ESurvivorState::SIT) return false;
+    if(State == ESurvivorState::DAMAGED || State == ESurvivorState::BALLOONED || State == ESurvivorState::SIT) return false;
 
     return true;
 }
@@ -196,12 +209,10 @@ bool ASurvivor::IsTakeDamage()
 bool ASurvivor::IsTakeAction()
 {
     // 행동 중인가 여부
-    if (State != ESurvivorState::READY && State != ESurvivorState::IDLE
-        && State != ESurvivorState::RUN && State != ESurvivorState::DAMAGED) {
-        return true;
-    }
+    if (State == ESurvivorState::READY || State == ESurvivorState::SUCCESS || State == ESurvivorState::FAIL) return false;
+    if (State == ESurvivorState::IDLE || State == ESurvivorState::MOVE || State == ESurvivorState::DAMAGED) return false;
 
-    return false;
+    return true;
 }
 
 void ASurvivor::SetInitData()
