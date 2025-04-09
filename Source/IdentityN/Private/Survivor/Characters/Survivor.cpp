@@ -122,7 +122,7 @@ float ASurvivor::TakeDamage(float Damage, struct FDamageEvent const& DamageEvent
     if (HP <= 0) {
         bCrawl = true;
         AnimInstance->bCrawl = true;
-        CameraBoom->SetRelativeLocation(FVector(0, 0, 0));
+        CrawlDeadLineTime = 0.0f;
 
         if (MoveComp->bCrouch) {
             MoveComp->bCrouch = false;
@@ -132,7 +132,6 @@ float ASurvivor::TakeDamage(float Damage, struct FDamageEvent const& DamageEvent
     else if (bCrawl) {
         bCrawl = false;
         AnimInstance->bCrawl = false;
-        CameraBoom->SetRelativeLocation(FVector(0, 0, 40));
     }
 
     return HP;
