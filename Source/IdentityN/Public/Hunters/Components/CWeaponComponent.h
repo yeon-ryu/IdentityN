@@ -23,6 +23,9 @@ private:
     UPROPERTY(EditDefaultsOnly, Category = "EnhancedInput")
     class UInputAction* IA_Action;
 
+    UPROPERTY(EditDefaultsOnly, Category = "EnhancedInput")
+    class UInputAction* IA_SubAction;
+
 private:
     UPROPERTY(EditAnywhere, Category = "DataAsset")
     class UCWeaponAsset* DataAssets[(int32)EWeaponType::MAX];
@@ -55,10 +58,30 @@ public:
     class UCDoAction* GetDoAction();
 
 public:
+    UFUNCTION(BlueprintCallable)
+    class UCSubAction* GetSubAction();
+
+public:
     void SetUnarmedMode();
     void SetHarpoonMode();
 
+private:
     void DoAction(const struct FInputActionValue& InVal);
+
+public:
+    UFUNCTION(BlueprintCallable)
+    void SubAction_Pressed();
+
+    UFUNCTION(BlueprintCallable)
+    void SubAction_Released();
+
+private:
+    void OnSubAction(const struct FInputActionValue& InVal);
+    void OffSubAction(const struct FInputActionValue& InVal);
+
+private:
+    void SelectAction(const struct FInputActionValue& InVal);
+    void InitAction(const struct FInputActionValue& InVal);
 
 private:
     void SetMode(EWeaponType InType);
@@ -73,5 +96,9 @@ private:
 private:
     UPROPERTY()
     class UCWeaponData* Datas[(int32)EWeaponType::MAX];
+
+    FTimerHandle handle;
+
+    bool bSelect = false;
 
 };

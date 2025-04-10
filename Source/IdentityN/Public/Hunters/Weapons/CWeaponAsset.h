@@ -29,6 +29,9 @@ private:
     UPROPERTY(EditAnywhere)
     TArray<FHitData> HitDatas;
 
+    UPROPERTY(EditAnywhere)
+    TSubclassOf<class UCSubAction> SubActionClass;
+
 public:
     UCWeaponAsset();
 
