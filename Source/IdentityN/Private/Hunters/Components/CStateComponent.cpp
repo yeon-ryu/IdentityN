@@ -46,6 +46,18 @@ void UCStateComponent::SetDamagedMode()
 
 }
 
+void UCStateComponent::OnSubActionMode()
+{
+    bInSubActionMode = true;
+
+}
+
+void UCStateComponent::OffSubActionMode()
+{
+    bInSubActionMode = false;
+
+}
+
 void UCStateComponent::ChangeType(EStateType InType)
 {
     EStateType prevType = Type;

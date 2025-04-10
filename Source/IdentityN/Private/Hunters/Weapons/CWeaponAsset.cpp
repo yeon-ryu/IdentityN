@@ -1,10 +1,11 @@
 ﻿#include "Hunters/Weapons/CWeaponAsset.h"
 #include "Global.h"
 #include "GameFramework/Character.h"
+#include "Hunters/Weapons/CWeaponData.h"
 #include "Hunters/Weapons/CAttachment.h"
 #include "Hunters/Weapons/CEquipment.h"
 #include "Hunters/Weapons/CDoAction.h"
-#include "Hunters/Weapons/CWeaponData.h"
+#include "Hunters/Weapons/CSubAction.h"
 
 UCWeaponAsset::UCWeaponAsset()
 {
@@ -60,9 +61,17 @@ void UCWeaponAsset::BeginPlay(ACharacter* InOwner, UCWeaponData** OutWeaponData)
         }
     }
 
+    UCSubAction* subAction = nullptr;
+    if (!!SubActionClass)
+    {
+        subAction = NewObject<UCSubAction>(this, SubActionClass);
+        subAction->BeginPlay(InOwner, attachment, doAction);
+    }
+
     *OutWeaponData = NewObject<UCWeaponData>();
     (*OutWeaponData)->Attachment = attachment;
     (*OutWeaponData)->Equipment = equipment;
     (*OutWeaponData)->DoAction = doAction;
+    (*OutWeaponData)->SubAction = subAction;
 
 }

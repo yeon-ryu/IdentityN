@@ -7,6 +7,7 @@
 #include "Hunters/Weapons/CAttachment.h"
 #include "Hunters/Weapons/CEquipment.h"
 #include "Hunters/Weapons/CDoAction.h"
+#include "Hunters/Weapons/CSubAction.h"
 #include "EnhancedInputComponent.h"
 #include "InputActionValue.h"
 
@@ -40,11 +41,17 @@ void UCWeaponComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
     if (!!GetDoAction())
         GetDoAction()->Tick(DeltaTime);
 
+    if (!!GetSubAction())
+        GetSubAction()->Tick(DeltaTime);
+
 }
 
 void UCWeaponComponent::OnBindEnhancedInputSystem(UEnhancedInputComponent* InEnhancedInput)
 {
     InEnhancedInput->BindAction(IA_Action, ETriggerEvent::Started, this, &UCWeaponComponent::DoAction);
+
+    InEnhancedInput->BindAction(IA_SubAction, ETriggerEvent::Triggered, this, &UCWeaponComponent::OnSubAction);
+    InEnhancedInput->BindAction(IA_SubAction, ETriggerEvent::Completed, this, &UCWeaponComponent::OffSubAction);
 
 }
 
@@ -81,6 +88,15 @@ UCDoAction* UCWeaponComponent::GetDoAction()
 
 }
 
+UCSubAction* UCWeaponComponent::GetSubAction()
+{
+    CheckTrueResult(IsUnarmedMode(), nullptr);
+    CheckFalseResult(!!Datas[(int32)Type], nullptr);
+
+    return Datas[(int32)Type]->GetSubAction();
+
+}
+
 void UCWeaponComponent::SetUnarmedMode()
 {
     GetEquipment()->Unequip();
@@ -101,6 +117,62 @@ void UCWeaponComponent::DoAction(const struct FInputActionValue& InVal)
 {
     if (!!GetDoAction())
         GetDoAction()->DoAction();
+
+}
+
+void UCWeaponComponent::SubAction_Pressed()
+{
+    if (!!GetSubAction())
+        GetSubAction()->Pressed();
+
+}
+
+void UCWeaponComponent::SubAction_Released()
+{
+    if (!!GetSubAction())
+        GetSubAction()->Released();
+
+}
+
+void UCWeaponComponent::OnSubAction(const FInputActionValue& InVal)
+{
+    SubAction_Pressed();
+
+}
+
+void UCWeaponComponent::OffSubAction(const FInputActionValue& InVal)
+{
+    SubAction_Released();
+
+}
+
+void UCWeaponComponent::SelectAction(const FInputActionValue& InVal)
+{
+    if (!GetWorld()->GetTimerManager().IsTimerActive(handle))
+        return;
+
+    auto lambda = [&]()
+        {
+            bSelect = true;
+        };
+
+    GetWorld()->GetTimerManager().SetTimer(handle, lambda, 1, false);
+
+}
+
+void UCWeaponComponent::InitAction(const FInputActionValue& InVal)
+{
+    if (GetWorld()->GetTimerManager().IsTimerActive(handle))
+        GetWorld()->GetTimerManager().ClearTimer(handle);
+
+    if (bSelect)
+    {
+        bSelect = false;
+
+        OnSubAction(FInputActionValue());
+        OffSubAction(FInputActionValue());
+    }
+    else DoAction(FInputActionValue());
 
 }
 
