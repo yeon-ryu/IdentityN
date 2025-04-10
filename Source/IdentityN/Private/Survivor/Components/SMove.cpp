@@ -12,6 +12,7 @@
 #include "Survivor/Animations/SAnimInstance.h"
 #include "Survivor/Data/SurvivorStruct.h"
 #include "Utilities/CLog.h"
+#include "Engine/TimerHandle.h"
 
 USMove::USMove()
 {
@@ -117,7 +118,7 @@ void USMove::ChangeCrawl(bool crawlState)
 void USMove::ResetSpeed()
 {
     // SMove 에 걸린 타이머 전부 종료 (버프들 타이머) 처리
-
+    GetWorld()->GetTimerManager().ClearAllTimersForObject(this);
 
     MoveComp->MaxWalkSpeed = runSpeed;
     if (me->bCrawl) {
@@ -130,11 +131,16 @@ void USMove::ResetSpeed()
 
 void USMove::BuffSpeed(float per, int seconds)
 {
-    float diff = MoveComp->MaxWalkSpeed * (1.0f + per / 100.0f);
-    MoveComp->MaxWalkSpeed = diff;
+    float diff = 1.0f + per / 100.0f;
+    MoveComp->MaxWalkSpeed = MoveComp->MaxWalkSpeed * diff;
 
     // 타이머 seconds 시간만큼 돌리고 종료되면 곱한만큼 나눠준다 -> 버프 중첩 대비
-
+    FTimerHandle handle;
+    GetWorld()->GetTimerManager().SetTimer(handle,
+        FTimerDelegate::CreateLambda([&] {
+            MoveComp->MaxWalkSpeed = MoveComp->MaxWalkSpeed / diff;
+        }), seconds, false
+    );
 }
 
 void USMove::SetMoveData()

@@ -126,4 +126,6 @@ protected:
 
 private:
     void SetInitData();
+
+    void ProcessDeadGuage();
 };

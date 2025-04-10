@@ -87,15 +87,9 @@ void ASurvivor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-    if (bCrawl) {
-        CrawlCurrentTime += DeltaTime;
-        
-        if (CrawlCurrentTime >= CrawlDeadTime) {
-            // 과다출혈 사망 탈락 처리
-
-            CrawlCurrentTime = 0.0f;
-            bCrawl = false;
-        }
+    // 혹시 모르니 이중 확인
+    if (bCrawl && HP == 0) {
+        ProcessDeadGuage();
     }
 }
 
@@ -221,5 +215,27 @@ void ASurvivor::SetInitData()
     if (SurvivorData == nullptr) return;
 
     Name = SurvivorData->name;
+}
+
+void ASurvivor::ProcessDeadGuage()
+{
+    if(State == ESurvivorState::FAIL || State == ESurvivorState::SUCCESS) return;
+
+    // 치료 받는 중이면 일단 이 함수는 return 할 것
+
+
+    CrawlCurrentTime += GetWorld()->GetDeltaSeconds();
+
+    DeadGauge = CrawlCurrentTime / CrawlDeadTime;
+
+    // 사망 : 탈락 UI 표시 필요
+    if (CrawlCurrentTime >= CrawlDeadTime) {
+        State = ESurvivorState::FAIL;
+        CLog::Print("Die");
+
+        // 상태가 Success 가 됐을 때도 bCrawl 상태가 풀린다.
+        bCrawl = false;
+        CrawlCurrentTime = 0.0f;
+    }
 }
 

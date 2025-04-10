@@ -1,5 +1,4 @@
 ﻿#include "Survivor/Components/SBuff.h"
-#include "SBuff.h"
 #include "Survivor/Characters/Survivor.h"
 #include "Survivor/Components/SMove.h"
 
