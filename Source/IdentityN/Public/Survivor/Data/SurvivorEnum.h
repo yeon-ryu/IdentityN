@@ -7,8 +7,8 @@
 UENUM(BlueprintType)
 enum class ESurvivorState : uint8 {
     READY UMETA(DisplayName = "대기"), 
-    IDLE UMETA(DisplayName = "정지"),
-    MOVE UMETA(DisplayName = "이동"),
+    IDLE UMETA(DisplayName = "기본상태"),
+    //MOVE UMETA(DisplayName = "이동"),
     DAMAGED UMETA(DisplayName = "피격"),
     HEAL UMETA(DisplayName = "치료"),
     DECODE UMETA(DisplayName = "해독"),

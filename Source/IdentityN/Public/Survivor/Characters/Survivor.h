@@ -39,6 +39,9 @@ public:
 
     UPROPERTY( EditAnywhere )
 	class USBuff* BuffComp;
+
+    UPROPERTY( EditAnywhere )
+	class USInteractionItem* InteractionItemComp;
     
 private:
 	/** Camera boom positioning the camera behind the character */
@@ -104,6 +107,9 @@ private:
     // 과다 출혈로 죽을 때까지 남은 시간
     float CrawlCurrentTime = 0.0f;
 
+    // 플레이어 식별자
+    int32 PlayerIdx = -1;
+
 public:
     /** Returns CameraBoom subobject **/
     FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
@@ -114,7 +120,13 @@ public:
 
     FORCEINLINE FString GetSurvivorName() const { return Name; }
 
+    FORCEINLINE int32 GetPlayerIdx() const { return PlayerIdx; }
+
+    FORCEINLINE void SetPlayerIdx(int32 idx) { PlayerIdx = idx; }
+
     virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
+
+    bool IsOutofGame();
 
 protected:
     /** Called for looking input */

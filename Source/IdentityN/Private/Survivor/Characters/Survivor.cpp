@@ -17,6 +17,7 @@
 #include "IdentityNGameMode.h"
 #include "Utilities/CLog.h"
 #include "Survivor/Components/SBuff.h"
+#include "Survivor/Components/SInteractionItem.h"
 
 // Sets default values
 ASurvivor::ASurvivor()
@@ -46,6 +47,7 @@ ASurvivor::ASurvivor()
 
     MoveComp = CreateDefaultSubobject<USMove>(TEXT("MoveComp"));
     BuffComp = CreateDefaultSubobject<USBuff>(TEXT("BuffComp"));
+    InteractionItemComp = CreateDefaultSubobject<USInteractionItem>(TEXT("InteractionItemComp"));
 
 
     ConstructorHelpers::FObjectFinder<UInputMappingContext> TempIMC(TEXT("/Script/EnhancedInput.InputMappingContext'/Game/RGY/Inputs/IMC_Survivor.IMC_Survivor'"));
@@ -100,6 +102,7 @@ void ASurvivor::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
     if (UEnhancedInputComponent* input = Cast<UEnhancedInputComponent>(PlayerInputComponent)) {
         MoveComp->SetupInputBinding(input);
+        InteractionItemComp->SetupInputBinding(input);
 
         // Looking
         input->BindAction(IA_Look, ETriggerEvent::Triggered, this, &ASurvivor::Look);
@@ -179,6 +182,13 @@ float ASurvivor::TakeDamage(float Damage, struct FDamageEvent const& DamageEvent
     return HP;
 }
 
+bool ASurvivor::IsOutofGame()
+{
+    if(State == ESurvivorState::READY || State == ESurvivorState::SUCCESS || State == ESurvivorState::FAIL) return true;
+
+    return false;
+}
+
 void ASurvivor::Look(const FInputActionValue& Value)
 {
     FVector2D LookAxisVector = Value.Get<FVector2D>();
@@ -194,7 +204,7 @@ void ASurvivor::Look(const FInputActionValue& Value)
 bool ASurvivor::IsTakeDamage()
 {
     // 무적 시간, 쓰러짐 상태, DAMAGED, BALLOONED, SIT
-    if (State == ESurvivorState::READY || State == ESurvivorState::SUCCESS || State == ESurvivorState::FAIL) return false;
+    if (IsOutofGame()) return false;
     if (bInvindibility || bCrawl) return false;
     if(State == ESurvivorState::DAMAGED || State == ESurvivorState::BALLOONED || State == ESurvivorState::SEAT) return false;
 
@@ -204,9 +214,10 @@ bool ASurvivor::IsTakeDamage()
 bool ASurvivor::IsTakeAction()
 {
     // 행동 중인가 여부
-    if (State == ESurvivorState::READY || State == ESurvivorState::SUCCESS || State == ESurvivorState::FAIL) return false;
-    if (State == ESurvivorState::IDLE || State == ESurvivorState::MOVE || State == ESurvivorState::DAMAGED
+    if (IsOutofGame()) return false;
+    if (State == ESurvivorState::IDLE|| State == ESurvivorState::DAMAGED
         || State == ESurvivorState::BALLOONED || State == ESurvivorState::SEAT) return false;
+    //  || State == ESurvivorState::MOVE
 
     return true;
 }
@@ -220,7 +231,7 @@ void ASurvivor::SetInitData()
 
 void ASurvivor::ProcessDeadGuage()
 {
-    if(State == ESurvivorState::FAIL || State == ESurvivorState::SUCCESS) return;
+    if(IsOutofGame()) return;
 
     // 치료 받는 중이면 일단 이 함수는 return 할 것
 

@@ -73,17 +73,26 @@ void USMove::Move(const struct FInputActionValue& Value)
 {
     FVector2D MovementVector = Value.Get<FVector2D>();
 
-    if (me->Controller != nullptr)
-    {
-        FVector dir = me->GetFollowCamera()->GetForwardVector() * MovementVector.X + me->GetFollowCamera()->GetRightVector() * MovementVector.Y;
+    if (me->Controller == nullptr) return;
 
-        me->AddMovementInput(FVector(dir.X, dir.Y, 0.0f).GetSafeNormal());
+    if(me->State == ESurvivorState::DECODE || me->State == ESurvivorState::HEAL || me->IsOutofGame()) {
+        me->State = ESurvivorState::IDLE;
+        me->AnimInstance->State = ESurvivorState::IDLE;
     }
+
+    FVector dir = me->GetFollowCamera()->GetForwardVector() * MovementVector.X + me->GetFollowCamera()->GetRightVector() * MovementVector.Y;
+
+    me->AddMovementInput(FVector(dir.X, dir.Y, 0.0f).GetSafeNormal());
 }
 
 void USMove::CrouchToggle(const struct FInputActionValue& Value)
 {
     if(me->bCrawl) return;
+
+    if (me->State == ESurvivorState::DECODE || me->State == ESurvivorState::HEAL || me->IsOutofGame()) {
+        me->State = ESurvivorState::IDLE;
+        me->AnimInstance->State = ESurvivorState::IDLE;
+    }
 
     ChangeCrouch(!bCrouch);
 }
@@ -161,4 +170,3 @@ void USMove::SetInitData()
     MoveComp->MaxWalkSpeed = runSpeed;
     MoveComp->MaxWalkSpeedCrouched = crouchSpeed;
 }
-
