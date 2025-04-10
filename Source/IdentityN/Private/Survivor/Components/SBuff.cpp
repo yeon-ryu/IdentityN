@@ -16,6 +16,7 @@ void USBuff::BeginPlay()
     me = Cast<ASurvivor>(GetOwner());
     if (me == nullptr) return;
 	
+    SetInitData();
 }
 
 
@@ -43,5 +44,18 @@ void USBuff::CompleteDecode()
     }
 
 
+}
+
+void USBuff::SetInitData()
+{
+    auto data = me->SurvivorData;
+
+    if (data == nullptr) {
+        // 값 못 가져왔을 때 디폴트 값
+        DamageSpeedSeconds = 2.0f;
+        return;
+    }
+
+    DamageSpeedSeconds = data->DamageSpeedTime;
 }
 

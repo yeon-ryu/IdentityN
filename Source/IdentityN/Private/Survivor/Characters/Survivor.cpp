@@ -196,7 +196,7 @@ bool ASurvivor::IsTakeDamage()
     // 무적 시간, 쓰러짐 상태, DAMAGED, BALLOONED, SIT
     if (State == ESurvivorState::READY || State == ESurvivorState::SUCCESS || State == ESurvivorState::FAIL) return false;
     if (bInvindibility || bCrawl) return false;
-    if(State == ESurvivorState::DAMAGED || State == ESurvivorState::BALLOONED || State == ESurvivorState::SIT) return false;
+    if(State == ESurvivorState::DAMAGED || State == ESurvivorState::BALLOONED || State == ESurvivorState::SEAT) return false;
 
     return true;
 }
@@ -205,7 +205,8 @@ bool ASurvivor::IsTakeAction()
 {
     // 행동 중인가 여부
     if (State == ESurvivorState::READY || State == ESurvivorState::SUCCESS || State == ESurvivorState::FAIL) return false;
-    if (State == ESurvivorState::IDLE || State == ESurvivorState::MOVE || State == ESurvivorState::DAMAGED) return false;
+    if (State == ESurvivorState::IDLE || State == ESurvivorState::MOVE || State == ESurvivorState::DAMAGED
+        || State == ESurvivorState::BALLOONED || State == ESurvivorState::SEAT) return false;
 
     return true;
 }
@@ -214,7 +215,7 @@ void ASurvivor::SetInitData()
 {
     if (SurvivorData == nullptr) return;
 
-    Name = SurvivorData->name;
+    Name = SurvivorData->Name;
 }
 
 void ASurvivor::ProcessDeadGuage()

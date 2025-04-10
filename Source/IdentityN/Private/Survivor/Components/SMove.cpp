@@ -48,7 +48,7 @@ void USMove::BeginPlay()
     MoveComp->BrakingDecelerationWalking = 2000.f;
     MoveComp->BrakingDecelerationFalling = 1500.0f;
 
-    SetMoveData();
+    SetInitData();
 }
 
 void USMove::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
@@ -143,7 +143,7 @@ void USMove::BuffSpeed(float per, int seconds)
     );
 }
 
-void USMove::SetMoveData()
+void USMove::SetInitData()
 {
     // 서버에 있는 csv 에서 읽어온 데이터 중 SurvivorId 로 데이터 가져와서 세팅
     auto data = me->SurvivorData;
@@ -155,9 +155,9 @@ void USMove::SetMoveData()
         return;
     }
 
-    runSpeed = data->runSpeed;
-    crouchSpeed = data->crouchSpeed;
-    crawlSpeed = data->crawlSpeed;
+    runSpeed = data->RunSpeed;
+    crouchSpeed = data->CrouchSpeed;
+    crawlSpeed = data->CrawlSpeed;
     MoveComp->MaxWalkSpeed = runSpeed;
     MoveComp->MaxWalkSpeedCrouched = crouchSpeed;
 }

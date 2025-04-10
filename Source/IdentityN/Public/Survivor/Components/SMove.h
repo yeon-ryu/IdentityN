@@ -64,5 +64,5 @@ public:
     void BuffSpeed(float per, int seconds);
 
 private:
-    void SetMoveData();
+    void SetInitData();
 };

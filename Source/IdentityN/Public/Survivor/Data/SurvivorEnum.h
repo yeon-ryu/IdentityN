@@ -14,9 +14,10 @@ enum class ESurvivorState : uint8 {
     DECODE UMETA(DisplayName = "해독"),
     DECODE_FAIL UMETA(DisplayName = "해독실패"),
     BALLOONED UMETA(DisplayName = "끌려감"), // UI 표시
-    SIT UMETA(DisplayName = "의자앉음"), // UI 표시
+    SEAT UMETA(DisplayName = "의자앉음"), // UI 표시
     RESCUE UMETA(DisplayName = "구출"),
-    PASS UMETA(DisplayName = "넘어가는중"),
+    PASSBOARD UMETA(DisplayName = "판자넘어가는중"),
+    PASSWINDOW UMETA(DisplayName = "창문넘어가는중"),
     PULLDOWN UMETA(DisplayName = "판자넘어뜨리는중"),
     SKILL UMETA(DisplayName = "스킬1"),
     SUCCESS UMETA(DisplayName = "탈출"), // UI 표시

@@ -11,19 +11,76 @@ struct FSurvivorData {
 
 public:
     UPROPERTY(BlueprintReadWrite)
-    int32 id;
+    int32 Id;
 
     UPROPERTY(BlueprintReadWrite)
-    FString name;
+    FString Name;
 
     UPROPERTY(BlueprintReadWrite)
-    float runSpeed;
+    float RunSpeed;
 
     UPROPERTY(BlueprintReadWrite)
-    float crouchSpeed;
+    float CrouchSpeed;
 
     UPROPERTY(BlueprintReadWrite)
-    float crawlSpeed;
+    float CrawlSpeed;
+
+    UPROPERTY(BlueprintReadWrite)
+    float DecodeTime;
+
+    UPROPERTY(BlueprintReadWrite)
+    float DecodeFailPer;
+
+    UPROPERTY(BlueprintReadWrite)
+    float DecodeFailTime;
+
+    UPROPERTY(BlueprintReadWrite)
+    float OpenDoorTime;
+
+    UPROPERTY(BlueprintReadWrite)
+    float PullTime;
+
+    UPROPERTY(BlueprintReadWrite)
+    float PassBoardFast;
+
+    UPROPERTY(BlueprintReadWrite)
+    float PassBoardNormal;
+
+    UPROPERTY(BlueprintReadWrite)
+    float PassBoardSlow;
+
+    UPROPERTY(BlueprintReadWrite)
+    float PassWindowFast;
+
+    UPROPERTY(BlueprintReadWrite)
+    float PassWindowNormal;
+
+    UPROPERTY(BlueprintReadWrite)
+    float PassWindowSlow;
+
+    UPROPERTY(BlueprintReadWrite)
+    float HealTime;
+
+    UPROPERTY(BlueprintReadWrite)
+    float TakeHealTime;
+
+    UPROPERTY(BlueprintReadWrite)
+    float HealSelfTime;
+
+    UPROPERTY(BlueprintReadWrite)
+    float RemainStepTime;
+
+    UPROPERTY(BlueprintReadWrite)
+    float DamageSpeedTime;
+
+    UPROPERTY(BlueprintReadWrite)
+    float BalloonedFallTime;
+
+    UPROPERTY(BlueprintReadWrite)
+    float SeatTakeOffTime;
+
+    UPROPERTY(BlueprintReadWrite)
+    float SeatEscapeTime;
 };
 
 /**
