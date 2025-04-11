@@ -36,7 +36,7 @@ public:
 
 private:
     UPROPERTY()
-    float Speed[(int32)ESpeedType::MAX] = { 300, 450 };
+    float Speed[(int32)ESpeedType::MAX] = { 464, 450 };
 
 private:
     UPROPERTY(EditAnywhere, Category = "CameraSpeed")
