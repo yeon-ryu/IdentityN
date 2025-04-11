@@ -58,7 +58,7 @@ public:
 
     void EndDecode();
 
-    void RemoveSurvivor(class ASurvivor* survivor);
+    void RemoveSurvivor(class ASurvivor* survivor, bool bAuth = false);
 
     void MiniGame();
 

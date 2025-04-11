@@ -75,7 +75,7 @@ void USMove::Move(const struct FInputActionValue& Value)
 
     if (me->Controller == nullptr) return;
 
-    if(me->State == ESurvivorState::DECODE || me->State == ESurvivorState::HEAL || me->IsOutofGame()) {
+    if(me->State == ESurvivorState::DECODE || me->State == ESurvivorState::OPEN || me->State == ESurvivorState::HEAL || me->IsOutofGame()) {
         me->State = ESurvivorState::IDLE;
         me->AnimInstance->State = ESurvivorState::IDLE;
     }

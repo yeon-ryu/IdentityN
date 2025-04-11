@@ -45,7 +45,7 @@ void USInteractionItem::Decode(const struct FInputActionValue& value)
 
     if (bNearDoor) {
         if (NearDoor == nullptr) {
-            EndOpen();
+            OutDoorArea();
             return;
         }
         
@@ -58,7 +58,7 @@ void USInteractionItem::Decode(const struct FInputActionValue& value)
 
     } else if(bNearChipher) {
         if (NearChipher == nullptr) {
-            EndDecode();
+            OutCipherArea();
             return;
         }
 
@@ -76,14 +76,19 @@ void USInteractionItem::EndDecode()
         me->State = ESurvivorState::IDLE;
         me->AnimInstance->State = ESurvivorState::IDLE;
     }
-    bNearChipher = false;
-    NearChipher = nullptr;
 }
 
 void USInteractionItem::InCipherArea(class ACipherMachine* machine)
 {
     bNearChipher = true;
     NearChipher = machine;
+}
+
+void USInteractionItem::OutCipherArea()
+{
+    EndDecode();
+    bNearChipher = false;
+    NearChipher = nullptr;
 }
 
 bool USInteractionItem::GetIsNearMachine()
@@ -117,14 +122,19 @@ void USInteractionItem::EndOpen()
         me->State = ESurvivorState::IDLE;
         me->AnimInstance->State = ESurvivorState::IDLE;
     }
-    bNearDoor = false;
-    NearDoor = nullptr;
 }
 
 void USInteractionItem::InDoorArea(ADoor* door)
 {
     bNearDoor = true;
     NearDoor = door;
+}
+
+void USInteractionItem::OutDoorArea()
+{
+    EndOpen();
+    bNearDoor = false;
+    NearDoor = nullptr;
 }
 
 void USInteractionItem::SetInitData()

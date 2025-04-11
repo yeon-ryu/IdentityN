@@ -64,6 +64,7 @@ public:
 
     void EndDecode();
     void InCipherArea(class ACipherMachine* machine);
+    void OutCipherArea();
 
     bool GetIsNearMachine();
     float GetDecodeTime();
@@ -73,6 +74,7 @@ public:
     float GetOpenTime();
     void EndOpen();
     void InDoorArea(class ADoor* door);
+    void OutDoorArea();
 
 
 private:

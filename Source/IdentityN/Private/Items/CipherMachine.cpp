@@ -50,6 +50,7 @@ void ACipherMachine::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+    if(State == EChiperState::COMPLETE) return;
     for (auto s : survivorList) {
         Decode(s);
     }
@@ -69,7 +70,8 @@ void ACipherMachine::StartDecode(class ASurvivor* survivor)
 void ACipherMachine::Decode(class ASurvivor* survivor)
 {
     if (survivor->State != ESurvivorState::DECODE) {
-        RemoveSurvivor(survivor);
+        RemoveSurvivor(survivor, true);
+        return;
     }
 
     float addPer = GetWorld()->GetDeltaSeconds() / survivor->InteractionItemComp->GetDecodeTime();
@@ -82,7 +84,7 @@ void ACipherMachine::Decode(class ASurvivor* survivor)
         // 타이머로 미니게임 부른다
     }
 
-    CLog::Print(FString::Printf(TEXT("Decoding... %.2f"), DecodeGauge));
+    CLog::Print(FString::Printf(TEXT("Decoding... %.2f"), DecodeGauge), -1, -1);
 }
 
 void ACipherMachine::EndDecode()
@@ -96,7 +98,7 @@ void ACipherMachine::EndDecode()
     }
 
     for (auto s : survivorList) {
-        s->InteractionItemComp->EndDecode();
+        s->InteractionItemComp->OutCipherArea();
     }
     survivorList.Empty();
 
@@ -105,11 +107,17 @@ void ACipherMachine::EndDecode()
     CLog::Print("Decode End");
 }
 
-void ACipherMachine::RemoveSurvivor(class ASurvivor* survivor)
+void ACipherMachine::RemoveSurvivor(class ASurvivor* survivor, bool bAuth /*= false*/)
 {
-    if(survivor == nullptr) return;
+    if (survivor == nullptr) return;
 
-    survivor->InteractionItemComp->EndDecode();
+    if (bAuth) {
+        // 다시 해독 시도할 수 있는 상태
+        survivor->InteractionItemComp->EndDecode();
+    }
+    else {
+        survivor->InteractionItemComp->OutCipherArea();
+    }
 
     for (int i = 0; i < survivorList.Num(); i++) {
         if (survivorList[i]->GetPlayerIdx() == survivor->GetPlayerIdx()) {
@@ -137,7 +145,7 @@ void ACipherMachine::CipherComplete()
 
     if (survivorList.Num() > 0) {
         for (auto s : survivorList) {
-            s->InteractionItemComp->EndDecode();
+            s->InteractionItemComp->OutCipherArea();
         }
     }
 }

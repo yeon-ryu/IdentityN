@@ -109,7 +109,9 @@ void ADoor::StartOpen(ASurvivor* sur)
 void ADoor::Open()
 {
     if (survivor->State != ESurvivorState::OPEN) {
-        RemoveSurvivor();
+        survivor->InteractionItemComp->EndOpen();
+        survivor = nullptr;
+        return;
     }
 
     float addPer = GetWorld()->GetDeltaSeconds() / survivor->InteractionItemComp->GetOpenTime();
@@ -119,7 +121,7 @@ void ADoor::Open()
         EndOpen();
     }
 
-    CLog::Print(FString::Printf(TEXT("Open... %.2f"), OpenGauge));
+    CLog::Print(FString::Printf(TEXT("Open... %.2f"), OpenGauge), -1, -1);
 }
 
 void ADoor::EndOpen()
@@ -141,7 +143,7 @@ void ADoor::RemoveSurvivor()
 {
     if(survivor == nullptr) return;
 
-    survivor->InteractionItemComp->EndOpen();
+    survivor->InteractionItemComp->OutDoorArea();
     survivor = nullptr;
 }
 
