@@ -6,6 +6,7 @@
 #include "Items/Door.h"
 #include "EngineUtils.h"
 #include "Utilities/CLog.h"
+#include "Items/CipherMachine.h"
 
 AIdentityNGameMode::AIdentityNGameMode()
 {
@@ -41,10 +42,16 @@ void AIdentityNGameMode::AddDecodeCipher()
 
         CLog::Print("Door is power on", -1, 5.0f, FColor::Red);
 
-        // 맵의 모든 대문을 찾아 열릴 수 있는 플래그를 on 으로 한다.
+        // 맵의 모든 대문을 찾아 열릴 수 있도록 변경
         for (TActorIterator<ADoor> it(GetWorld()); it; ++it) {
             ADoor* door = *it;
             door->PowerOn();
+        }
+
+        // 맵의 모든 해독기를 정지시킨다.
+        for (TActorIterator<ACipherMachine> it(GetWorld()); it; ++it) {
+            ACipherMachine* machine = *it;
+            machine->CipherComplete();
         }
     }
 }

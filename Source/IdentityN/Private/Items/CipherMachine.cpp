@@ -18,7 +18,7 @@ ACipherMachine::ACipherMachine()
 
     CollisionComp = CreateDefaultSubobject<USphereComponent>(TEXT("CollisionComp"));
     SetRootComponent(CollisionComp);
-    CollisionComp->SetSphereRadius(60.0f);
+    CollisionComp->SetSphereRadius(63.0f);
 
     CollisionComp->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
     CollisionComp->SetCollisionResponseToAllChannels(ECR_Ignore);
@@ -87,6 +87,7 @@ void ACipherMachine::Decode(class ASurvivor* survivor)
 
 void ACipherMachine::EndDecode()
 {
+    if (State == EChiperState::COMPLETE) return;
     State = EChiperState::COMPLETE;
 
     auto gm = Cast<AIdentityNGameMode>(GetWorld()->GetAuthGameMode());
@@ -127,6 +128,18 @@ void ACipherMachine::MiniGame()
 {
     // 미니게임 발생 -> 성공/실패 처리는 생존자 로직에서
     // 실패하면 RemoveSurvivor(), DECODEFAIL -> IDLE 상태로
+}
+
+void ACipherMachine::CipherComplete()
+{
+    State = EChiperState::COMPLETE;
+    CollisionComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+    if (survivorList.Num() > 0) {
+        for (auto s : survivorList) {
+            s->InteractionItemComp->EndDecode();
+        }
+    }
 }
 
 void ACipherMachine::OnMachineOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)

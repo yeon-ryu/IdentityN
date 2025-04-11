@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Components/TimelineComponent.h"
 #include "Door.generated.h"
 
 UENUM(BlueprintType)
@@ -53,6 +54,18 @@ private:
     float OpenGauge = 0.0f;
 
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = OPEN, meta = (AllowPrivateAccess = "true"))
+    class UTimelineComponent* OpenTimeLineComp;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = OPEN, meta = (AllowPrivateAccess = "true"))
+    class UCurveFloat* OpenCurve;
+
+    FOnTimelineFloat OpenCallback;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = OPEN, meta = (AllowPrivateAccess = "true"))
+    float TimeLineLength = 3.0f;
+
+
 public:
     void PowerOn();
 
@@ -70,4 +83,7 @@ private:
 
     UFUNCTION()
 	void OnPannelEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
+    UFUNCTION()
+    void OpenInterpReturn(float value);
 };

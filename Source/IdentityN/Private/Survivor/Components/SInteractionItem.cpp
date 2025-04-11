@@ -41,7 +41,7 @@ void USInteractionItem::SetupInputBinding(class UEnhancedInputComponent* input)
 
 void USInteractionItem::Decode(const struct FInputActionValue& value)
 {
-    if (me->State == ESurvivorState::OPEN || me->State == ESurvivorState::DECODE || me->State == ESurvivorState::DECODE_FAIL) return;
+    if (me->State == ESurvivorState::OPEN || me->State == ESurvivorState::DECODE || me->State == ESurvivorState::DECODE_FAIL || me->bCrawl || me->AnimInstance->falling) return;
 
     if (bNearDoor) {
         if (NearDoor == nullptr) {
@@ -49,6 +49,11 @@ void USInteractionItem::Decode(const struct FInputActionValue& value)
             return;
         }
         
+        // 해독 / 오픈 하려는 물체 방향을 보도록
+        //FVector dir = NearDoor->GetActorLocation() - me->GetActorLocation();
+        //dir.Z = 0.0f;
+        //me->AddMovementInput(dir.GetSafeNormal());
+
         NearDoor->StartOpen(me);
 
     } else if(bNearChipher) {
@@ -56,6 +61,10 @@ void USInteractionItem::Decode(const struct FInputActionValue& value)
             EndDecode();
             return;
         }
+
+        //FVector dir = NearChipher->GetActorLocation() - me->GetActorLocation();
+        //dir.Z = 0.0f;
+        //me->AddMovementInput(dir.GetSafeNormal());
 
         NearChipher->StartDecode(me);
     }
@@ -128,7 +137,7 @@ void USInteractionItem::SetInitData()
         DecodeTime = 5.0f; // 81.0f;
         DecodeFailPer = 1.0f;
         DecodeFailTime = 2.0f;
-        OpenDoorTime = 18.0f;
+        OpenDoorTime = 10.0f; // 18.0f;
         return;
     }
 }

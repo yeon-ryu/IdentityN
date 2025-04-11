@@ -10,6 +10,8 @@
 #include "Utilities/CLog.h"
 #include "Engine/StaticMesh.h"
 #include "Components/SceneComponent.h"
+#include "Components/TimelineComponent.h"
+#include "Curves/CurveFloat.h"
 
 // Sets default values
 ADoor::ADoor()
@@ -41,7 +43,7 @@ ADoor::ADoor()
     if (TempPannelComp.Succeeded()) {
         PannelComp->SetStaticMesh(TempPannelComp.Object);
         PannelComp->SetRelativeScale3D(FVector(0.1f));
-        PannelComp->SetRelativeLocationAndRotation(FVector(-13, 180, -30), FRotator(0, 180, 0));
+        PannelComp->SetRelativeLocationAndRotation(FVector(-22, 180, -30), FRotator(0, 180, 0));
     }
     PannelComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
@@ -54,6 +56,14 @@ ADoor::ADoor()
     CollisionComp->SetCollisionResponseToAllChannels(ECR_Ignore);
     CollisionComp->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECR_Overlap);
     CollisionComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+
+    OpenTimeLineComp = CreateDefaultSubobject<UTimelineComponent>(TEXT("OpenTimeLineComp"));
+    OpenCallback.BindUFunction(this, FName("OpenInterpReturn"));
+    ConstructorHelpers::FObjectFinder<UCurveFloat> TempCurve(TEXT("/Script/Engine.CurveFloat'/Game/RGY/Blueprints/CV_OpenDoor.CV_OpenDoor'"));
+    if (TempCurve.Succeeded()) {
+        OpenCurve = TempCurve.Object;
+    }
 }
 
 // Called when the game starts or when spawned
@@ -63,6 +73,10 @@ void ADoor::BeginPlay()
 	
     CollisionComp->OnComponentBeginOverlap.AddDynamic(this, &ADoor::OnPannelOverlap);
     CollisionComp->OnComponentEndOverlap.AddDynamic(this, &ADoor::OnPannelEndOverlap);
+
+    OpenTimeLineComp->SetLooping(false);
+    OpenTimeLineComp->AddInterpFloat(OpenCurve, OpenCallback);
+    OpenTimeLineComp->SetTimelineLength(TimeLineLength);
 }
 
 // Called every frame
@@ -110,6 +124,7 @@ void ADoor::Open()
 
 void ADoor::EndOpen()
 {
+    if(State == EDoorState::OPEN) return;
     State = EDoorState::OPEN;
 
     RemoveSurvivor();
@@ -119,7 +134,7 @@ void ADoor::EndOpen()
     CLog::Print("Open Door End");
 
     // 애니메이션으로 대문이 움직여서 열리게
-
+    OpenTimeLineComp->PlayFromStart();
 }
 
 void ADoor::RemoveSurvivor()
@@ -147,5 +162,10 @@ void ADoor::OnPannelEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor*
     CLog::Print(FString::Printf(TEXT("%d Survivor Out of Open Area"), sur->GetPlayerIdx()));
 
     RemoveSurvivor();
+}
+
+void ADoor::OpenInterpReturn(float value)
+{
+    MeshComp->SetRelativeLocation(FVector(0, value, 0));
 }
 
