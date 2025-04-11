@@ -53,11 +53,12 @@ void ACHunter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 void ACHunter::InitializeCharacters()
 {
     // Mesh
-    GetMesh()->SetRelativeLocation(FVector(0, 0, ~90 + 1));
+    GetMesh()->SetRelativeLocation(FVector(0, 0, ~110 + 1));
     GetMesh()->SetRelativeRotation(FQuat(FRotator(0, 270, 0)));
+    GetMesh()->SetRelativeScale3D(FVector(3));
 
     // SpringArm
-    CHelpers::CreateComponent<USpringArmComponent>(this, &SpringArm, "SpringArm", GetMesh());
+    CHelpers::CreateComponent<USpringArmComponent>(this, &SpringArm, "SpringArm", RootComponent);
     SpringArm->SetRelativeLocation(FVector(0, 0, 90));
     SpringArm->TargetArmLength = 200;
     SpringArm->bUsePawnControlRotation = true;
@@ -65,7 +66,7 @@ void ACHunter::InitializeCharacters()
 
     // Camera
     CHelpers::CreateComponent<UCameraComponent>(this, &Camera, "Camera", SpringArm);
-    Camera->SetRelativeLocation(FVector(~120 + 1, 0, 90));
+    Camera->SetRelativeLocation(FVector(~120 + 1, 0, 0));
     Camera->bUsePawnControlRotation = false;
 
     // Mapping Context
