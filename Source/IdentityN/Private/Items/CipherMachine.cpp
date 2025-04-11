@@ -8,6 +8,7 @@
 #include "Survivor/Components/SInteractionItem.h"
 #include "Utilities/CLog.h"
 #include "Survivor/Animations/SAnimInstance.h"
+#include "IdentityNGameMode.h"
 
 // Sets default values
 ACipherMachine::ACipherMachine()
@@ -26,7 +27,7 @@ ACipherMachine::ACipherMachine()
     MeshComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MeshComp"));
     // 암호기 에셋 추가
     MeshComp->SetupAttachment(RootComponent);
-    MeshComp->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
+    MeshComp->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
     MeshComp->SetCollisionObjectType(ECC_WorldStatic);
 
     Antenna = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Antenna"));
@@ -56,7 +57,7 @@ void ACipherMachine::Tick(float DeltaTime)
 
 void ACipherMachine::StartDecode(class ASurvivor* survivor)
 {
-    if(survivor == nullptr || !survivor->InteractionItemComp->GetIsNearMachine()) return;
+    if(survivor == nullptr || !survivor->InteractionItemComp->GetIsNearMachine() || State == EChiperState::COMPLETE) return;
     survivor->State = ESurvivorState::DECODE;
     survivor->AnimInstance->State = ESurvivorState::DECODE;
     survivorList.Add(survivor);
@@ -88,16 +89,25 @@ void ACipherMachine::EndDecode()
 {
     State = EChiperState::COMPLETE;
 
+    auto gm = Cast<AIdentityNGameMode>(GetWorld()->GetAuthGameMode());
+    if (gm) {
+        gm->AddDecodeCipher();
+    }
+
     for (auto s : survivorList) {
         s->InteractionItemComp->EndDecode();
     }
     survivorList.Empty();
+
+    CollisionComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
     CLog::Print("Decode End");
 }
 
 void ACipherMachine::RemoveSurvivor(class ASurvivor* survivor)
 {
+    if(survivor == nullptr) return;
+
     survivor->InteractionItemComp->EndDecode();
 
     for (int i = 0; i < survivorList.Num(); i++) {
@@ -111,8 +121,6 @@ void ACipherMachine::RemoveSurvivor(class ASurvivor* survivor)
     if (survivorList.Num() == 0 && DecodeGauge < 1.0f) {
         State = EChiperState::READY;
     }
-
-    CLog::Print(FString::Printf(TEXT("%d Survivor Out of Decode"), survivor->GetPlayerIdx()));
 }
 
 void ACipherMachine::MiniGame()
@@ -127,7 +135,7 @@ void ACipherMachine::OnMachineOverlap(UPrimitiveComponent* OverlappedComponent, 
     if (survivor == nullptr) return;
 
     survivor->InteractionItemComp->InCipherArea(this);
-    CLog::Print(FString::Printf(TEXT("%d Survivor In the Decode"), survivor->GetPlayerIdx()));
+    CLog::Print(FString::Printf(TEXT("%d Survivor In the Decode Area"), survivor->GetPlayerIdx()));
 }
 
 void ACipherMachine::OnMachineEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
@@ -136,19 +144,8 @@ void ACipherMachine::OnMachineEndOverlap(UPrimitiveComponent* OverlappedComponen
     if (survivor == nullptr) return;
 
     bool bWorker = false;
-    if (survivor->InteractionItemComp->GetIsNearMachine()) {
-        bWorker = true;
-    }
-    else {
-        for (int i = 0; i < survivorList.Num(); i++) {
-            if (survivorList[i]->GetPlayerIdx() == survivor->GetPlayerIdx()) {
-                bWorker = true;
-                break;
-            }
-        }
-    }
 
-    if (bWorker) {
-        RemoveSurvivor(survivor);
-    }
+    CLog::Print(FString::Printf(TEXT("%d Survivor Out of Decode Area"), survivor->GetPlayerIdx()));
+
+    RemoveSurvivor(survivor);
 }

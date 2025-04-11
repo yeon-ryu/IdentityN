@@ -22,6 +22,15 @@ public:
     TMap<int32, FSurvivorData> SurvivorDataMap;
 
 private:
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = GamePlay, meta=(AllowPrivateAccess = "true"))
+    int32 decodeCipherCount = 0;
+
+public:
+    void AddDecodeCipher();
+
+    int32 GetDecodeCipherCount();
+
+private:
     void ReadCSVData();
 };
 

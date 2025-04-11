@@ -13,6 +13,7 @@ enum class ESurvivorState : uint8 {
     HEAL UMETA(DisplayName = "치료"),
     DECODE UMETA(DisplayName = "해독"),
     DECODE_FAIL UMETA(DisplayName = "해독실패"),
+    OPEN UMETA(DisplayName = "문열기"),
     BALLOONED UMETA(DisplayName = "끌려감"), // UI 표시
     SEAT UMETA(DisplayName = "의자앉음"), // UI 표시
     RESCUE UMETA(DisplayName = "구출"),

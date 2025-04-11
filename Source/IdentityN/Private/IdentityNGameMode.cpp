@@ -3,6 +3,9 @@
 #include "IdentityNGameMode.h"
 #include "IdentityNCharacter.h"
 #include "UObject/ConstructorHelpers.h"
+#include "Items/Door.h"
+#include "EngineUtils.h"
+#include "Utilities/CLog.h"
 
 AIdentityNGameMode::AIdentityNGameMode()
 {
@@ -18,6 +21,39 @@ void AIdentityNGameMode::BeginPlay()
 {
     // 최초에 한번 CSV 에서 읽어와서 리스트나 맵에 넣어놓기
     ReadCSVData();
+}
+
+void AIdentityNGameMode::AddDecodeCipher()
+{
+    if(decodeCipherCount >= 5) return;
+
+    ++decodeCipherCount;
+
+    CLog::Print(FString::Printf(TEXT("Remain Cipher : %d"), (5 - decodeCipherCount)), -1, 5.0f, FColor::Red);
+
+    // 플레이어 UI 의 해독기 수 변화
+
+    // 대문 열리는 조건 : 기본 모드
+    if (decodeCipherCount >= 5) {
+        // 전기 들어온 효과음
+
+        // 모든 플레이어한테 알림 -> 생존자는 SBuff->CompleteDecode() 가 발동
+
+        CLog::Print("Door is power on", -1, 5.0f, FColor::Red);
+
+        // 맵의 모든 대문을 찾아 열릴 수 있는 플래그를 on 으로 한다.
+        for (TActorIterator<ADoor> it(GetWorld()); it; ++it) {
+            ADoor* door = *it;
+            door->PowerOn();
+        }
+    }
+}
+
+int32 AIdentityNGameMode::GetDecodeCipherCount()
+{
+    // 나중에 게임 UI 에서 남은 해독기 수 같은 것을 표시할 때 정보 사용
+
+    return decodeCipherCount;
 }
 
 void AIdentityNGameMode::ReadCSVData()

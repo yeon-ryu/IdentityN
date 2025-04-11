@@ -30,20 +30,30 @@ private:
 	UPROPERTY()
 	class ASurvivor* me;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Cipher, meta = (AllowPrivateAccess = "true"))
     float DecodeTime;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Cipher, meta = (AllowPrivateAccess = "true"))
     float DecodeFailPer;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Cipher, meta = (AllowPrivateAccess = "true"))
     float DecodeFailTime;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Cipher, meta = (AllowPrivateAccess = "true"))
     class ACipherMachine* NearChipher;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Cipher, meta = (AllowPrivateAccess = "true"))
     bool bNearChipher = false;
+
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Door, meta = (AllowPrivateAccess = "true"))
+    float OpenDoorTime;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Door, meta = (AllowPrivateAccess = "true"))
+    class ADoor* NearDoor;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Door, meta = (AllowPrivateAccess = "true"))
+    bool bNearDoor = false;
 
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
@@ -58,6 +68,12 @@ public:
     bool GetIsNearMachine();
     float GetDecodeTime();
     void SetDecodeTime(float time);
+
+    bool GetIsNearDoor();
+    float GetOpenTime();
+    void EndOpen();
+    void InDoorArea(class ADoor* door);
+
 
 private:
     void SetInitData();
