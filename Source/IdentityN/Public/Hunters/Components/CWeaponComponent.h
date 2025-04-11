@@ -99,6 +99,8 @@ private:
 
     FTimerHandle handle;
 
+    float ChargetTime = 0;
+
     bool bSelect = false;
 
 };

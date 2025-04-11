@@ -48,10 +48,13 @@ void UCWeaponComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 
 void UCWeaponComponent::OnBindEnhancedInputSystem(UEnhancedInputComponent* InEnhancedInput)
 {
-    InEnhancedInput->BindAction(IA_Action, ETriggerEvent::Started, this, &UCWeaponComponent::DoAction);
+    //InEnhancedInput->BindAction(IA_Action, ETriggerEvent::Started, this, &UCWeaponComponent::DoAction);
 
-    InEnhancedInput->BindAction(IA_SubAction, ETriggerEvent::Triggered, this, &UCWeaponComponent::OnSubAction);
-    InEnhancedInput->BindAction(IA_SubAction, ETriggerEvent::Completed, this, &UCWeaponComponent::OffSubAction);
+    //InEnhancedInput->BindAction(IA_SubAction, ETriggerEvent::Triggered, this, &UCWeaponComponent::OnSubAction);
+    //InEnhancedInput->BindAction(IA_SubAction, ETriggerEvent::Completed, this, &UCWeaponComponent::OffSubAction);
+
+    InEnhancedInput->BindAction(IA_Action, ETriggerEvent::Triggered, this, &UCWeaponComponent::SelectAction);
+    InEnhancedInput->BindAction(IA_Action, ETriggerEvent::Completed, this, &UCWeaponComponent::InitAction);
 
 }
 
@@ -148,26 +151,34 @@ void UCWeaponComponent::OffSubAction(const FInputActionValue& InVal)
 
 void UCWeaponComponent::SelectAction(const FInputActionValue& InVal)
 {
-    if (!GetWorld()->GetTimerManager().IsTimerActive(handle))
-        return;
+    //if (!GetWorld()->GetTimerManager().IsTimerActive(handle))
+    //    return;
 
-    auto lambda = [&]()
-        {
-            bSelect = true;
-        };
+    //auto lambda = [&]() { bSelect = true; };
 
-    GetWorld()->GetTimerManager().SetTimer(handle, lambda, 1, false);
+    //GetWorld()->GetTimerManager().SetTimer(handle, lambda, 1, false);
+
+    ChargetTime += GetWorld()->GetDeltaSeconds();
 
 }
 
 void UCWeaponComponent::InitAction(const FInputActionValue& InVal)
 {
-    if (GetWorld()->GetTimerManager().IsTimerActive(handle))
-        GetWorld()->GetTimerManager().ClearTimer(handle);
+    //if (GetWorld()->GetTimerManager().IsTimerActive(handle))
+    //    GetWorld()->GetTimerManager().ClearTimer(handle);
 
-    if (bSelect)
+    //if (bSelect)
+    //{
+    //    bSelect = false;
+
+    //    OnSubAction(FInputActionValue());
+    //    OffSubAction(FInputActionValue());
+    //}
+    //else DoAction(FInputActionValue());
+
+    if (ChargetTime >= 1)
     {
-        bSelect = false;
+        ChargetTime = 0;
 
         OnSubAction(FInputActionValue());
         OffSubAction(FInputActionValue());
