@@ -4,6 +4,8 @@
 #include "Survivor/Characters/Embalmer.h"
 #include "Survivor/Animations/SAnimInstance.h"
 #include "Survivor/Animations/EmbalmerAnim.h"
+#include "Components/StaticMeshComponent.h"
+#include "Engine/StaticMesh.h"
 
 AEmbalmer::AEmbalmer()
 {
@@ -29,6 +31,29 @@ AEmbalmer::AEmbalmer()
 
     if (TempAnimInst.Succeeded()) {
         GetMesh()->SetAnimInstanceClass(TempAnimInst.Class);
+    }
+
+    Bag = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Bag"));
+    Bag->SetupAttachment(GetMesh(), TEXT("RightHandSocket"));
+    Bag->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+    ConstructorHelpers::FObjectFinder<UStaticMesh>TempBagMesh (TEXT("/Script/Engine.StaticMesh'/Game/RGY/Modelings/embalmer/item/close_bag.close_bag'"));
+    if (TempBagMesh.Succeeded()) {
+        Bag->SetStaticMesh(TempBagMesh.Object);
+        Bag->SetVisibility(false);
+    }
+}
+
+void AEmbalmer::Tick(float DeltaTime)
+{
+    Super::Tick(DeltaTime);
+
+    // Tick 에서 해주기엔 과한 작업 아닌가 싶은데 Ember 가 상태 변환하는거 체크하려면 tick 에서 와야하니..
+    if (State == ESurvivorState::IDLE && !bCrawl && !Bag->IsVisible()) {
+        Bag->SetVisibility(true);
+    }
+    else if (Bag->IsVisible() && (State != ESurvivorState::IDLE || bCrawl || AnimInstance->falling)) {
+        Bag->SetVisibility(false);
     }
 }
 

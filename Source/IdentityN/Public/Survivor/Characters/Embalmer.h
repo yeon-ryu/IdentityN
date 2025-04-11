@@ -17,6 +17,12 @@ class IDENTITYN_API AEmbalmer : public ASurvivor
 public:
     AEmbalmer();
 
+    virtual void Tick(float DeltaTime) override;
+
+private:
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(AllowPrivateAccess="true"))
+    class UStaticMeshComponent* Bag;
+
 protected:
     virtual void BeginPlay() override;
 };
