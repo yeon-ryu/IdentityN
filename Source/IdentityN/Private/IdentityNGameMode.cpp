@@ -7,6 +7,7 @@
 #include "EngineUtils.h"
 #include "Utilities/CLog.h"
 #include "Items/CipherMachine.h"
+#include "Survivor/Data/SurvivorStruct.h"
 
 AIdentityNGameMode::AIdentityNGameMode()
 {
@@ -21,7 +22,8 @@ AIdentityNGameMode::AIdentityNGameMode()
 void AIdentityNGameMode::BeginPlay()
 {
     // 최초에 한번 CSV 에서 읽어와서 리스트나 맵에 넣어놓기
-    ReadCSVData();
+    ReadSurvivorData();
+
 }
 
 void AIdentityNGameMode::AddDecodeCipher()
@@ -63,7 +65,20 @@ int32 AIdentityNGameMode::GetDecodeCipherCount()
     return decodeCipherCount;
 }
 
-void AIdentityNGameMode::ReadCSVData()
+FString AIdentityNGameMode::ReadCSVData(FString url, FString sheetName, FString range /*= ""*/)
 {
 
+}
+
+void AIdentityNGameMode::ReadSurvivorData()
+{
+    FString result = ReadCSVData("", "", "");
+
+    FSurvivorData sData;
+
+    // result 돌면서 구조체 리스트에 변수명 돌면서 넣어주기
+    for (;;) {
+        // C++ 에서는 values 같은 구조체 변수들을 가져올 수 있는게 없나..?
+
+    }
 }

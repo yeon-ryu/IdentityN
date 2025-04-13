@@ -31,8 +31,10 @@ public:
     int32 GetDecodeCipherCount();
 
 private:
-    void ReadCSVData();
+    // url, sheetName, 원하는 스트럭처를 넣어주면 알아서 해당 스트럭처 리스트에 시트 값을 넣어서 반환해준다.
+    /*template <typename T> ReadCSVData(FString url, FString sheetName, T bindingStruct, FString range = "");*/
+
+    FString ReadCSVData(FString url, FString sheetName, FString range = "");
+
+    void ReadSurvivorData();
 };
-
-
-
