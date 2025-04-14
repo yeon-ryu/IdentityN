@@ -18,6 +18,7 @@
 #include "Survivor/Components/SBuff.h"
 #include "Survivor/Components/SInteractionItem.h"
 #include "IdentityNGameInstance.h"
+#include "IdentityNGameMode.h"
 
 // Sets default values
 ASurvivor::ASurvivor()
@@ -253,6 +254,9 @@ void ASurvivor::ProcessDeadGuage()
         // 상태가 Success 가 됐을 때도 bCrawl 상태가 풀린다.
         bCrawl = false;
         CrawlCurrentTime = 0.0f;
+
+        auto gm = Cast<AIdentityNGameMode>(GetWorld()->GetAuthGameMode());
+        gm->Eliminate(this);
     }
 }
 

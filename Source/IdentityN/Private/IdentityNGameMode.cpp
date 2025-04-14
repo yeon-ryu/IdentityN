@@ -61,3 +61,34 @@ int32 AIdentityNGameMode::GetDecodeCipherCount()
 
     return decodeCipherCount;
 }
+
+void AIdentityNGameMode::Escape(class ASurvivor* sur)
+{
+    escapeCount++;
+    escapeList.Add(sur);
+    
+    CLog::Print(FString::Printf(TEXT("%d Survivor Escape!"), escapeCount), -1, 5, FColor::Red);
+
+    if (escapeCount + eliminateCount == 4) {
+        GameEnd();
+    }
+}
+
+void AIdentityNGameMode::Eliminate(class ASurvivor* sur)
+{
+    eliminateCount++;
+    eliminateList.Add(sur);
+
+    CLog::Print(FString::Printf(TEXT("%d Survivor Eliminate!"), eliminateCount), -1, 5, FColor::Red);
+
+    if (escapeCount + eliminateCount == 4) {
+        GameEnd();
+    }
+}
+
+void AIdentityNGameMode::GameEnd()
+{
+    CLog::Print(
+        FString::Printf(TEXT("Game End. Winner : %s"), escapeCount == eliminateCount ? "Draw" : (escapeCount > eliminateCount ? "Survivor Win" : "Hunter Win"))
+    );
+}

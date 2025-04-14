@@ -12,6 +12,8 @@
 #include "Components/SceneComponent.h"
 #include "Components/TimelineComponent.h"
 #include "Curves/CurveFloat.h"
+#include "Components/BoxComponent.h"
+#include "IdentityNGameMode.h"
 
 // Sets default values
 ADoor::ADoor()
@@ -57,7 +59,17 @@ ADoor::ADoor()
     CollisionComp->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECR_Overlap);
     CollisionComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
+    // 탈출 Collision
+    EscapeCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("EscapeComp"));
+    EscapeCollision->SetupAttachment(RootComponent);
+    EscapeCollision->SetRelativeLocation(FVector(300, 0, -110));
+    EscapeCollision->SetRelativeScale3D(FVector(1.0f, 10.0f, 2.0f));
 
+    EscapeCollision->SetCollisionResponseToAllChannels(ECR_Ignore);
+    EscapeCollision->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECR_Overlap);
+    EscapeCollision->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+
+    // 문 열기 애니메이션 타임라인
     OpenTimeLineComp = CreateDefaultSubobject<UTimelineComponent>(TEXT("OpenTimeLineComp"));
     OpenCallback.BindUFunction(this, FName("OpenInterpReturn"));
     ConstructorHelpers::FObjectFinder<UCurveFloat> TempCurve(TEXT("/Script/Engine.CurveFloat'/Game/RGY/Blueprints/CV_OpenDoor.CV_OpenDoor'"));
@@ -73,6 +85,7 @@ void ADoor::BeginPlay()
 	
     CollisionComp->OnComponentBeginOverlap.AddDynamic(this, &ADoor::OnPannelOverlap);
     CollisionComp->OnComponentEndOverlap.AddDynamic(this, &ADoor::OnPannelEndOverlap);
+    EscapeCollision->OnComponentBeginOverlap.AddDynamic(this, &ADoor::OnEscapeOverlap);
 
     OpenTimeLineComp->SetLooping(false);
     OpenTimeLineComp->AddInterpFloat(OpenCurve, OpenCallback);
@@ -164,6 +177,15 @@ void ADoor::OnPannelEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor*
     CLog::Print(FString::Printf(TEXT("%d Survivor Out of Open Area"), sur->GetPlayerIdx()));
 
     RemoveSurvivor();
+}
+
+void ADoor::OnEscapeOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+    auto sur = Cast<ASurvivor>(OtherActor);
+    if (sur == nullptr) return;
+
+    auto gm = Cast<AIdentityNGameMode>(GetWorld()->GetAuthGameMode());
+    gm->Escape(sur);
 }
 
 void ADoor::OpenInterpReturn(float value)
