@@ -7,6 +7,7 @@
 #include "EngineUtils.h"
 #include "Utilities/CLog.h"
 #include "Items/CipherMachine.h"
+#include "Survivor/Characters/Survivor.h"
 
 AIdentityNGameMode::AIdentityNGameMode()
 {
@@ -79,6 +80,9 @@ void AIdentityNGameMode::Eliminate(class ASurvivor* sur)
     eliminateCount++;
     eliminateList.Add(sur);
 
+    // 해당 캐릭터를 관전자 모드로 변경 필요
+    sur->Destroy();
+
     CLog::Print(FString::Printf(TEXT("%d Survivor Eliminate!"), eliminateCount), -1, 5, FColor::Red);
 
     if (escapeCount + eliminateCount == 4) {
@@ -88,7 +92,7 @@ void AIdentityNGameMode::Eliminate(class ASurvivor* sur)
 
 void AIdentityNGameMode::GameEnd()
 {
-    CLog::Print(
-        FString::Printf(TEXT("Game End. Winner : %s"), escapeCount == eliminateCount ? "Draw" : (escapeCount > eliminateCount ? "Survivor Win" : "Hunter Win"))
-    );
+    FString win = escapeCount == eliminateCount ? TEXT("Draw") : (escapeCount > eliminateCount ? TEXT("Survivor Win") : TEXT("Hunter Win"));
+
+    CLog::Print(TEXT("Game End. : ") + win);
 }
