@@ -16,7 +16,9 @@ public:
     FORCEINLINE class ACAttachment* GetAttachment() { return Attachment; }
     FORCEINLINE class UCEquipment* GetEquipment() { return Equipment; }
     FORCEINLINE class UCDoAction* GetDoAction() { return DoAction; }
-    FORCEINLINE class UCSubAction* GetSubAction() { return SubAction; }
+    FORCEINLINE class UCChargeAction* GetChargeAction() { return ChargeAction; }
+    FORCEINLINE class UCSkill* GetSkill() { return Skill; }
+    FORCEINLINE class UCDoAction* GetSkillAction() { return SkillAction; }
 
 private:
     UPROPERTY()
@@ -29,6 +31,12 @@ private:
     class UCDoAction* DoAction;
 
     UPROPERTY()
-    class UCSubAction* SubAction;
+    class UCChargeAction* ChargeAction;
+
+    UPROPERTY()
+    class UCSkill* Skill;
+
+    UPROPERTY()
+    class UCDoAction* SkillAction;
 
 };

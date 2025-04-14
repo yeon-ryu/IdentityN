@@ -1,13 +1,13 @@
 ﻿#pragma once
 
 #include "CoreMinimal.h"
-#include "Hunters/Weapons/CSubAction.h"
+#include "Hunters/Weapons/CChargeAction.h"
 #include "Hunters/Weapons/CWeaponStructures.h"
 #include "Kismet/KismetSystemLibrary.h"
-#include "CSubAction_Harpoon.generated.h"
+#include "CChargeAction_Harpoon.generated.h"
 
 UCLASS(Blueprintable)
-class IDENTITYN_API UCSubAction_Harpoon : public UCSubAction
+class IDENTITYN_API UCChargeAction_Harpoon : public UCChargeAction
 {
 	GENERATED_BODY()
 	
@@ -30,8 +30,8 @@ private:
 
 public:
     void Pressed() override;
-    void Begin_SubAction_Implementation() override;
-    void End_SubAction_Implementation() override;
+    void Begin_ChargeAction_Implementation() override;
+    void End_ChargeAction_Implementation() override;
     void Tick_Implementation(float InDeltaTime) override;
 
 private:

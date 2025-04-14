@@ -24,7 +24,10 @@ private:
     class UInputAction* IA_Action;
 
     UPROPERTY(EditDefaultsOnly, Category = "EnhancedInput")
-    class UInputAction* IA_SubAction;
+    class UInputAction* IA_ChargeAction;
+
+    UPROPERTY(EditDefaultsOnly, Category = "EnhancedInput")
+    class UInputAction* IA_Skill;
 
 private:
     UPROPERTY(EditAnywhere, Category = "DataAsset")
@@ -57,9 +60,11 @@ public:
     class UCEquipment* GetEquipment();
     class UCDoAction* GetDoAction();
 
+    class UCSkill* GetSkill();
+
 public:
     UFUNCTION(BlueprintCallable)
-    class UCSubAction* GetSubAction();
+    class UCChargeAction* GetChargeAction();
 
 public:
     void SetUnarmedMode();
@@ -70,18 +75,21 @@ private:
 
 public:
     UFUNCTION(BlueprintCallable)
-    void SubAction_Pressed();
+    void ChargeAction_Pressed();
 
     UFUNCTION(BlueprintCallable)
-    void SubAction_Released();
+    void ChargeAction_Released();
 
 private:
-    void OnSubAction(const struct FInputActionValue& InVal);
-    void OffSubAction(const struct FInputActionValue& InVal);
+    void OnChargeAction(const struct FInputActionValue& InVal);
+    void OffChargeAction(const struct FInputActionValue& InVal);
 
 private:
     void SelectAction(const struct FInputActionValue& InVal);
     void InitAction(const struct FInputActionValue& InVal);
+
+    void ChargingSkill(const struct FInputActionValue& InVal);
+    void ShootSkill(const struct FInputActionValue& InVal);
 
 private:
     void SetMode(EWeaponType InType);
@@ -99,8 +107,12 @@ private:
 
     FTimerHandle handle;
 
-    float ChargetTime = 0;
+    float ChargeTime = 0;
 
     bool bSelect = false;
+
+public:
+    bool bCanSkill = true;
+    bool bUsedSkill = false;
 
 };
