@@ -23,10 +23,17 @@ public:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Survivor)
     TMap<int32, FSurvivorData> SurvivorDataMap;
 
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Survivor)
+    TMap<int32, FSurvivorPersona> SurvivorPersonaMap;
+
 private:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = DataTable, meta = (AllowPrivateAccess = "true"))
     class UDataTable* SurvivorDataTable;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = DataTable, meta = (AllowPrivateAccess = "true"))
+    class UDataTable* SurvivorPersonaTable;
+
 private:
     void ReadSurvivorData();
+    void ReadSurvivorPersona();
 };

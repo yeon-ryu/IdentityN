@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Engine/DataTable.h"
+#include "SurvivorEnum.h"
 #include "SurvivorStruct.generated.h"
 
 USTRUCT(Atomic, BlueprintType)
@@ -82,6 +83,30 @@ public:
 
     UPROPERTY(BlueprintReadWrite)
     float SeatEscapeTime;
+};
+
+USTRUCT(Atomic, BlueprintType)
+struct FSurvivorPersona : public FTableRowBase {
+    GENERATED_BODY()
+
+public:
+    UPROPERTY(BlueprintReadWrite)
+    FString RowName;
+
+    UPROPERTY(BlueprintReadWrite)
+    int32 Id;
+
+    UPROPERTY(BlueprintReadWrite)
+    FString Name;
+
+    UPROPERTY(BlueprintReadWrite)
+    FString Desc;
+
+    UPROPERTY(BlueprintReadWrite)
+    ESurvivorPersonaTrigger Trigger;
+
+    UPROPERTY(BlueprintReadWrite)
+    FString Data; 
 };
 
 /**

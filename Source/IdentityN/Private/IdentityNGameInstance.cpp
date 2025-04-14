@@ -16,6 +16,15 @@ UIdentityNGameInstance::UIdentityNGameInstance()
     else {
         CLog::Log("Fail Load SurvivorDataTable.");
     }
+
+    static ConstructorHelpers::FObjectFinder<UDataTable>TempSPersona(TEXT("/Script/Engine.DataTable'/Game/RGY/Data/SurvivorPersona.SurvivorPersona'"));
+
+    if (TempSPersona.Succeeded()) {
+        SurvivorPersonaTable = TempSPersona.Object;
+    }
+    else {
+        CLog::Log("Fail Load SurvivorPersonaTable.");
+    }
 }
 
 void UIdentityNGameInstance::Init()
@@ -37,5 +46,20 @@ void UIdentityNGameInstance::ReadSurvivorData()
     }
     else {
         CLog::Log("Fail Binding SurvivorDataMap.");
+    }
+}
+
+void UIdentityNGameInstance::ReadSurvivorPersona()
+{
+    if (SurvivorPersonaTable) {
+        TArray<FSurvivorPersona*> dataList;
+        SurvivorPersonaTable->GetAllRows(FString(), dataList);
+
+        for (FSurvivorPersona* sd : dataList) {
+            SurvivorPersonaMap.Add(sd->Id, *sd);
+        }
+    }
+    else {
+        CLog::Log("Fail Binding SurvivorPersonaMap.");
     }
 }

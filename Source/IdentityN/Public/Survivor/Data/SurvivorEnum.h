@@ -25,6 +25,12 @@ enum class ESurvivorState : uint8 {
     FAIL UMETA(DisplayName = "실종") // UI 표시
 };
 
+UENUM(BlueprintType)
+enum class ESurvivorPersonaTrigger : uint8 {
+    CompleteDecode UMETA(DisplayName = "해독완료"),
+    Damaged UMETA(DisplayName = "피격 시")
+};
+
 /**
  * 
  */
