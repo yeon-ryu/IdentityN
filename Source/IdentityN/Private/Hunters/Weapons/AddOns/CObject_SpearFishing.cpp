@@ -6,6 +6,7 @@
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Hunters/Components/CWeaponComponent.h"
 #include "Hunters/Weapons/CAttachment.h"
+#include "Engine/DamageEvents.h"
 
 ACObject_SpearFishing::ACObject_SpearFishing()
 {
@@ -111,6 +112,12 @@ void ACObject_SpearFishing::OnComponentBeginOverlap(UPrimitiveComponent* Overlap
     else
     {
         if (OtherActor == GetOwner()) return;
+
+        if (ACharacter* character = Cast<ACharacter>(OtherActor))
+        {
+            character->TakeDamage(1, FDamageEvent(), GetOwner()->GetInstigatorController(), this);
+            return;
+        }
 
         Projectile->Deactivate();
         Capsule->SetCollisionEnabled(ECollisionEnabled::NoCollision);

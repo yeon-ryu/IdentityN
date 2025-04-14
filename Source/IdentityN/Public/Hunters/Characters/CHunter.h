@@ -16,6 +16,9 @@ private:
     UPROPERTY(VisibleAnywhere, Category = "Character")
     class UCameraComponent* Camera;
 
+    UPROPERTY(VisibleAnywhere, Category = "Character")
+    class USphereComponent* Fear;
+
 private:
     UPROPERTY(VisibleAnywhere, Category = "Components")
     class UCStateComponent* State;
@@ -43,5 +46,15 @@ public:
 
 private:
     void InitializeCharacters();
+
+    UFUNCTION()
+    void OnComponentBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+    UFUNCTION()
+    void OnComponentEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
+private:
+    UPROPERTY()
+    class ACharacter* Target;
 
 };
