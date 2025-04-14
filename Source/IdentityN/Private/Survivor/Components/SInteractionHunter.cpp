@@ -2,6 +2,7 @@
 #include "Survivor/Characters/Survivor.h"
 #include "Hunters/Characters/CHunter.h"
 #include "Utilities/CLog.h"
+#include "Components/CapsuleComponent.h"
 
 USInteractionHunter::USInteractionHunter()
 {
@@ -12,6 +13,11 @@ void USInteractionHunter::BeginPlay()
 {
 	Super::BeginPlay();
 	
+    me = Cast<ASurvivor>(GetOwner());
+    if (me == nullptr) return;
+    
+    me->GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &USInteractionHunter::OnSenseOverlap);
+    me->GetCapsuleComponent()->OnComponentEndOverlap.AddDynamic(this, &USInteractionHunter::OnSenseEndOverlap);
 }
 
 void USInteractionHunter::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
@@ -43,7 +49,7 @@ void USInteractionHunter::CheckDistanceHunter()
     // 감시자의 거리에 따라 UI 에 심장이 뚜렷하게 나타나고 거리가 멀어지면 심장이 연해진다.
     float dis = loc.Length();
 
-    CLog::Print(FString::Printf(TEXT("Hunter is Near! : %.2f"), dis));
+    CLog::Print(FString::Printf(TEXT("Hunter is Near! : %.2f"), dis), -1, -1, FColor::Green);
 }
 
 void USInteractionHunter::OnSenseOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)

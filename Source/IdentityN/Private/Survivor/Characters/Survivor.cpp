@@ -19,6 +19,7 @@
 #include "Survivor/Components/SInteractionItem.h"
 #include "IdentityNGameInstance.h"
 #include "IdentityNGameMode.h"
+#include "Survivor/Components/SInteractionHunter.h"
 
 // Sets default values
 ASurvivor::ASurvivor()
@@ -49,6 +50,7 @@ ASurvivor::ASurvivor()
     MoveComp = CreateDefaultSubobject<USMove>(TEXT("MoveComp"));
     BuffComp = CreateDefaultSubobject<USBuff>(TEXT("BuffComp"));
     InteractionItemComp = CreateDefaultSubobject<USInteractionItem>(TEXT("InteractionItemComp"));
+    InteractionHunterComp = CreateDefaultSubobject<USInteractionHunter>(TEXT("InteractionHunterComp"));
 
 
     ConstructorHelpers::FObjectFinder<UInputMappingContext> TempIMC(TEXT("/Script/EnhancedInput.InputMappingContext'/Game/RGY/Inputs/IMC_Survivor.IMC_Survivor'"));

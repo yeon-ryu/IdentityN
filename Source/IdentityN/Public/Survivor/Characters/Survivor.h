@@ -42,6 +42,9 @@ public:
 
     UPROPERTY( EditAnywhere )
 	class USInteractionItem* InteractionItemComp;
+
+    UPROPERTY( EditAnywhere )
+	class USInteractionHunter* InteractionHunterComp;
     
 private:
 	/** Camera boom positioning the camera behind the character */
