@@ -50,7 +50,7 @@ void USInteractionItem::Decode(const struct FInputActionValue& value)
         }
         
         // 해독 / 오픈 하려는 물체 방향을 보도록
-        FVector dir = NearDoor->GetActorLocation() - me->GetActorLocation();
+        FVector dir = NearDoor->GetPannelLocation() - me->GetActorLocation();
         me->SetActorRotation(FRotator(0.0f, UKismetMathLibrary::ClampAxis(dir.GetSafeNormal().Rotation().Yaw), 0.0f));
 
         NearDoor->StartOpen(me);

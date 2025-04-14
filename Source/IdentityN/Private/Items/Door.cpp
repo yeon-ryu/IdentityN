@@ -163,6 +163,11 @@ void ADoor::RemoveSurvivor()
     survivor = nullptr;
 }
 
+FVector ADoor::GetPannelLocation()
+{
+    return PannelComp->GetComponentLocation();
+}
+
 void ADoor::OnPannelOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
     auto sur = Cast<ASurvivor>(OtherActor);
