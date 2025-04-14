@@ -84,7 +84,7 @@ void ACipherMachine::Decode(class ASurvivor* survivor)
         // 타이머로 미니게임 부른다
     }
 
-    CLog::Print(FString::Printf(TEXT("Decoding... %.2f"), DecodeGauge), -1, -1);
+    CLog::Print(FString::Printf(TEXT("Decoding... %.2f"), DecodeGauge), -1, -1, FColor::Cyan);
 }
 
 void ACipherMachine::EndDecode()

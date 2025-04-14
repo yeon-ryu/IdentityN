@@ -67,7 +67,7 @@ ADoor::ADoor()
 
     EscapeCollision->SetCollisionResponseToAllChannels(ECR_Ignore);
     EscapeCollision->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECR_Overlap);
-    EscapeCollision->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+    EscapeCollision->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
     // 문 열기 애니메이션 타임라인
     OpenTimeLineComp = CreateDefaultSubobject<UTimelineComponent>(TEXT("OpenTimeLineComp"));
@@ -134,7 +134,7 @@ void ADoor::Open()
         EndOpen();
     }
 
-    CLog::Print(FString::Printf(TEXT("Open... %.2f"), OpenGauge), -1, -1);
+    CLog::Print(FString::Printf(TEXT("Open... %.2f"), OpenGauge), -1, -1, FColor::Cyan);
 }
 
 void ADoor::EndOpen()
@@ -150,6 +150,9 @@ void ADoor::EndOpen()
 
     // 애니메이션으로 대문이 움직여서 열리게
     OpenTimeLineComp->PlayFromStart();
+
+    // 탈출 가능
+    EscapeCollision->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 }
 
 void ADoor::RemoveSurvivor()
