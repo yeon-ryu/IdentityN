@@ -5,7 +5,8 @@
 #include "Hunters/Weapons/CAttachment.h"
 #include "Hunters/Weapons/CEquipment.h"
 #include "Hunters/Weapons/CDoAction.h"
-#include "Hunters/Weapons/CSubAction.h"
+#include "Hunters/Weapons/CChargeAction.h"
+#include "Hunters/Weapons/Skills/CSkill.h"
 
 UCWeaponAsset::UCWeaponAsset()
 {
@@ -61,17 +62,25 @@ void UCWeaponAsset::BeginPlay(ACharacter* InOwner, UCWeaponData** OutWeaponData)
         }
     }
 
-    UCSubAction* subAction = nullptr;
-    if (!!SubActionClass)
+    UCChargeAction* chargeAction = nullptr;
+    if (!!ChargeActionClass)
     {
-        subAction = NewObject<UCSubAction>(this, SubActionClass);
-        subAction->BeginPlay(InOwner, attachment, doAction);
+        chargeAction = NewObject<UCChargeAction>(this, ChargeActionClass);
+        chargeAction->BeginPlay(InOwner, attachment, doAction);
+    }
+
+    UCSkill* skill = nullptr;
+    if (!!SkillClass)
+    {
+        skill = NewObject<UCSkill>(this, SkillClass);
+        skill->BeginPlay(InOwner, attachment, skill);
     }
 
     *OutWeaponData = NewObject<UCWeaponData>();
     (*OutWeaponData)->Attachment = attachment;
     (*OutWeaponData)->Equipment = equipment;
     (*OutWeaponData)->DoAction = doAction;
-    (*OutWeaponData)->SubAction = subAction;
+    (*OutWeaponData)->ChargeAction = chargeAction;
+    (*OutWeaponData)->Skill = skill;
 
 }

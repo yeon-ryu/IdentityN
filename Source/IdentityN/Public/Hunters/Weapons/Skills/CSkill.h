@@ -2,21 +2,18 @@
 
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
-#include "CSubAction.generated.h"
+#include "CSkill.generated.h"
 
 UCLASS()
-class IDENTITYN_API UCSubAction : public UObject
+class IDENTITYN_API UCSkill : public UObject
 {
 	GENERATED_BODY()
 	
 public:
-    FORCEINLINE bool GetInAction() { return bInAction; }
+    UCSkill();
 
 public:
-    UCSubAction();
-
-public:
-    virtual void BeginPlay(class ACharacter* InOwner, class ACAttachment* InAttachment, class UCDoAction* InDoAction);
+    virtual void BeginPlay(class ACharacter* InOwner, class ACAttachment* InAttachment, class UCSkill* InSkill);
 
 public:
     virtual void Pressed();
@@ -24,12 +21,12 @@ public:
 
 public:
     UFUNCTION(BlueprintNativeEvent)
-    void Begin_SubAction();
-    virtual void Begin_SubAction_Implementation() {}
+    void Begin_Skill();
+    virtual void Begin_Skill_Implementation() {}
 
     UFUNCTION(BlueprintNativeEvent)
-    void End_SubAction();
-    virtual void End_SubAction_Implementation() {}
+    void End_Skill();
+    virtual void End_Skill_Implementation() {}
 
     UFUNCTION(BlueprintNativeEvent)
     void Tick(float InDeltaTime);
@@ -40,7 +37,7 @@ protected:
 
     class ACharacter* Owner;
     class ACAttachment* Attachment;
-    class UCDoAction* DoAction;
+    class UCSkill* Skill;
 
     class UCStateComponent* State;
     class UCMovementComponent* Movement;

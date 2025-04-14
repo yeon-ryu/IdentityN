@@ -1,16 +1,16 @@
-﻿#include "Hunters/Weapons/CSubAction.h"
+﻿#include "Hunters/Weapons/CChargeAction.h"
 #include "Global.h"
 #include "GameFramework/Character.h"
 #include "Components/CapsuleComponent.h"
 #include "Hunters/Components/CStateComponent.h"
 #include "Hunters/Components/CMovementComponent.h"
 
-UCSubAction::UCSubAction()
+UCChargeAction::UCChargeAction()
 {
 
 }
 
-void UCSubAction::BeginPlay(ACharacter* InOwner, ACAttachment* InAttachment, UCDoAction* InDoAction)
+void UCChargeAction::BeginPlay(ACharacter* InOwner, ACAttachment* InAttachment, UCDoAction* InDoAction)
 {
     Owner = InOwner;
     Attachment = InAttachment;
@@ -21,13 +21,13 @@ void UCSubAction::BeginPlay(ACharacter* InOwner, ACAttachment* InAttachment, UCD
 
 }
 
-void UCSubAction::Pressed()
+void UCChargeAction::Pressed()
 {
     bInAction = true;
 
 }
 
-void UCSubAction::Released()
+void UCChargeAction::Released()
 {
     bInAction = false;
 

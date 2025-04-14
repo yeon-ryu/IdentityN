@@ -30,7 +30,10 @@ private:
     TArray<FHitData> HitDatas;
 
     UPROPERTY(EditAnywhere)
-    TSubclassOf<class UCSubAction> SubActionClass;
+    TSubclassOf<class UCChargeAction> ChargeActionClass;
+
+    UPROPERTY(EditAnywhere)
+    TSubclassOf<class UCSkill> SkillClass;
 
 public:
     UCWeaponAsset();

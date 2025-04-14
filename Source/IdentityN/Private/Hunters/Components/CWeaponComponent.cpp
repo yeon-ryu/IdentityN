@@ -7,7 +7,10 @@
 #include "Hunters/Weapons/CAttachment.h"
 #include "Hunters/Weapons/CEquipment.h"
 #include "Hunters/Weapons/CDoAction.h"
-#include "Hunters/Weapons/CSubAction.h"
+#include "Hunters/Weapons/CChargeAction.h"
+#include "Hunters/Weapons/Skills/CSkill.h"
+#include "Hunters/Weapons/AddOns/CSkill_Object.h"
+#include "Hunters/Weapons/AddOns/CObject_SpearFishing.h"
 #include "EnhancedInputComponent.h"
 #include "InputActionValue.h"
 
@@ -41,8 +44,8 @@ void UCWeaponComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
     if (!!GetDoAction())
         GetDoAction()->Tick(DeltaTime);
 
-    if (!!GetSubAction())
-        GetSubAction()->Tick(DeltaTime);
+    if (!!GetChargeAction())
+        GetChargeAction()->Tick(DeltaTime);
 
 }
 
@@ -50,11 +53,14 @@ void UCWeaponComponent::OnBindEnhancedInputSystem(UEnhancedInputComponent* InEnh
 {
     //InEnhancedInput->BindAction(IA_Action, ETriggerEvent::Started, this, &UCWeaponComponent::DoAction);
 
-    //InEnhancedInput->BindAction(IA_SubAction, ETriggerEvent::Triggered, this, &UCWeaponComponent::OnSubAction);
-    //InEnhancedInput->BindAction(IA_SubAction, ETriggerEvent::Completed, this, &UCWeaponComponent::OffSubAction);
+    //InEnhancedInput->BindAction(IA_ChargeAction, ETriggerEvent::Triggered, this, &UCWeaponComponent::OnChargeAction);
+    //InEnhancedInput->BindAction(IA_ChargeAction, ETriggerEvent::Completed, this, &UCWeaponComponent::OffChargeAction);
 
     InEnhancedInput->BindAction(IA_Action, ETriggerEvent::Triggered, this, &UCWeaponComponent::SelectAction);
     InEnhancedInput->BindAction(IA_Action, ETriggerEvent::Completed, this, &UCWeaponComponent::InitAction);
+
+    InEnhancedInput->BindAction(IA_Skill, ETriggerEvent::Started, this, &UCWeaponComponent::ChargingSkill);
+    InEnhancedInput->BindAction(IA_Skill, ETriggerEvent::Completed, this, &UCWeaponComponent::ShootSkill);
 
 }
 
@@ -91,12 +97,20 @@ UCDoAction* UCWeaponComponent::GetDoAction()
 
 }
 
-UCSubAction* UCWeaponComponent::GetSubAction()
+UCSkill* UCWeaponComponent::GetSkill()
 {
     CheckTrueResult(IsUnarmedMode(), nullptr);
     CheckFalseResult(!!Datas[(int32)Type], nullptr);
 
-    return Datas[(int32)Type]->GetSubAction();
+    return Datas[(int32)Type]->GetSkill();
+}
+
+UCChargeAction* UCWeaponComponent::GetChargeAction()
+{
+    CheckTrueResult(IsUnarmedMode(), nullptr);
+    CheckFalseResult(!!Datas[(int32)Type], nullptr);
+
+    return Datas[(int32)Type]->GetChargeAction();
 
 }
 
@@ -123,67 +137,79 @@ void UCWeaponComponent::DoAction(const struct FInputActionValue& InVal)
 
 }
 
-void UCWeaponComponent::SubAction_Pressed()
+void UCWeaponComponent::ChargeAction_Pressed()
 {
-    if (!!GetSubAction())
-        GetSubAction()->Pressed();
+    if (!!GetChargeAction())
+        GetChargeAction()->Pressed();
 
 }
 
-void UCWeaponComponent::SubAction_Released()
+void UCWeaponComponent::ChargeAction_Released()
 {
-    if (!!GetSubAction())
-        GetSubAction()->Released();
+    if (!!GetChargeAction())
+        GetChargeAction()->Released();
 
 }
 
-void UCWeaponComponent::OnSubAction(const FInputActionValue& InVal)
+void UCWeaponComponent::OnChargeAction(const FInputActionValue& InVal)
 {
-    SubAction_Pressed();
+    ChargeAction_Pressed();
 
 }
 
-void UCWeaponComponent::OffSubAction(const FInputActionValue& InVal)
+void UCWeaponComponent::OffChargeAction(const FInputActionValue& InVal)
 {
-    SubAction_Released();
+    ChargeAction_Released();
 
 }
 
 void UCWeaponComponent::SelectAction(const FInputActionValue& InVal)
 {
-    //if (!GetWorld()->GetTimerManager().IsTimerActive(handle))
-    //    return;
-
-    //auto lambda = [&]() { bSelect = true; };
-
-    //GetWorld()->GetTimerManager().SetTimer(handle, lambda, 1, false);
-
-    ChargetTime += GetWorld()->GetDeltaSeconds();
+    ChargeTime += GetWorld()->GetDeltaSeconds();
 
 }
 
 void UCWeaponComponent::InitAction(const FInputActionValue& InVal)
 {
-    //if (GetWorld()->GetTimerManager().IsTimerActive(handle))
-    //    GetWorld()->GetTimerManager().ClearTimer(handle);
-
-    //if (bSelect)
-    //{
-    //    bSelect = false;
-
-    //    OnSubAction(FInputActionValue());
-    //    OffSubAction(FInputActionValue());
-    //}
-    //else DoAction(FInputActionValue());
-
-    if (ChargetTime >= 1)
+    if (ChargeTime >= 1)
     {
-        ChargetTime = 0;
+        ChargeTime = 0;
 
-        OnSubAction(FInputActionValue());
-        OffSubAction(FInputActionValue());
+        OnChargeAction(FInputActionValue());
+        OffChargeAction(FInputActionValue());
     }
     else DoAction(FInputActionValue());
+
+}
+
+void UCWeaponComponent::ChargingSkill(const FInputActionValue& InVal)
+{
+    if (bCanSkill)
+    {
+        if (!!GetSkill())
+            GetSkill()->Pressed();
+
+        bCanSkill = false;
+
+        bUsedSkill = true;
+    }
+    else
+    {
+        if (ACObject_SpearFishing* object = CHelpers::FindActor<ACObject_SpearFishing>(GetWorld()))
+            object->Return(GetOwner()->GetActorLocation());
+    }
+
+}
+
+void UCWeaponComponent::ShootSkill(const FInputActionValue& InVal)
+{
+    if (!bCanSkill)
+    {
+        if (!!GetSkill())
+            GetSkill()->Released();
+
+        GetAttachment()->SetActorHiddenInGame(bUsedSkill);
+    }
 
 }
 

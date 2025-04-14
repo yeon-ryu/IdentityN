@@ -17,9 +17,6 @@ void UCStateComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-    const UEnum* s = FindObject<UEnum>(ANY_PACKAGE, TEXT("EStateType"), true);
-
-    CLog::Print(s->GetNameByValue((int32)Type).ToString());
 }
 
 void UCStateComponent::SetDefaultMode()
@@ -46,15 +43,15 @@ void UCStateComponent::SetDamagedMode()
 
 }
 
-void UCStateComponent::OnSubActionMode()
+void UCStateComponent::OnChargeActionMode()
 {
-    bInSubActionMode = true;
+    bInChargeActionMode = true;
 
 }
 
-void UCStateComponent::OffSubActionMode()
+void UCStateComponent::OffChargeActionMode()
 {
-    bInSubActionMode = false;
+    bInChargeActionMode = false;
 
 }
 

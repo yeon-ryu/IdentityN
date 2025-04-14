@@ -1,14 +1,15 @@
-﻿#include "Hunters/Notifies/CAnimNotifyState_SubAction.h"
+﻿#include "Hunters/Notifies/CAnimNotifyState_Skill.h"
 #include "Global.h"
 #include "Hunters/Components/CWeaponComponent.h"
-#include "Hunters/Weapons/CChargeAction.h"
+#include "Hunters/Weapons/Skills/CSkill.h"
 
-FString UCAnimNotifyState_SubAction::GetNotifyName_Implementation() const
+FString UCAnimNotifyState_Skill::GetNotifyName_Implementation() const
 {
-    return "ChargeAction";
+    return "Skill";
+
 }
 
-void UCAnimNotifyState_SubAction::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float TotalDuration)
+void UCAnimNotifyState_Skill::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float TotalDuration)
 {
     Super::NotifyBegin(MeshComp, Animation, TotalDuration);
     CheckNull(MeshComp);
@@ -18,10 +19,11 @@ void UCAnimNotifyState_SubAction::NotifyBegin(USkeletalMeshComponent* MeshComp, 
     CheckNull(weapon);
     CheckNull(weapon->GetChargeAction());
 
-    weapon->GetChargeAction()->Begin_ChargeAction();
+    weapon->GetSkill()->Begin_Skill();
+
 }
 
-void UCAnimNotifyState_SubAction::NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation)
+void UCAnimNotifyState_Skill::NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation)
 {
     Super::NotifyEnd(MeshComp, Animation);
 
@@ -32,5 +34,6 @@ void UCAnimNotifyState_SubAction::NotifyEnd(USkeletalMeshComponent* MeshComp, UA
     CheckNull(weapon);
     CheckNull(weapon->GetChargeAction());
 
-    weapon->GetChargeAction()->End_ChargeAction();
+    weapon->GetSkill()->End_Skill();
+
 }

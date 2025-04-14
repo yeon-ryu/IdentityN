@@ -1,4 +1,4 @@
-﻿#include "Hunters/Weapons/SubActions/CSubAction_Harpoon.h"
+﻿#include "Hunters/Weapons/ChargeActions/CChargeAction_Harpoon.h"
 #include "Global.h"
 #include "GameFramework/Character.h"
 #include "Components/CapsuleComponent.h"
@@ -7,26 +7,26 @@
 #include "Hunters/Weapons/CAttachment.h"
 #include "Hunters/Weapons/CDoAction.h"
 
-void UCSubAction_Harpoon::Pressed()
+void UCChargeAction_Harpoon::Pressed()
 {
     CheckFalse(State->IsDefaultMode());
-    CheckTrue(State->IsSubActionMode());
+    CheckTrue(State->IsChargeActionMode());
 
     Super::Pressed();
 
     State->SetActionMode();
-    State->OnSubActionMode();
+    State->OnChargeActionMode();
 
     ActionData.DoAction(Owner);
 
 }
 
-void UCSubAction_Harpoon::Begin_SubAction_Implementation()
+void UCChargeAction_Harpoon::Begin_ChargeAction_Implementation()
 {
-    Super::Begin_SubAction_Implementation();
+    Super::Begin_ChargeAction_Implementation();
 
     Attachment->OnAttachmentBeginOverlap.Remove(DoAction, "OnAttachmentBeginOverlap");
-    Attachment->OnAttachmentBeginOverlap.AddDynamic(this, &UCSubAction_Harpoon::OnAttachmentBeginOverlap);
+    Attachment->OnAttachmentBeginOverlap.AddDynamic(this, &UCChargeAction_Harpoon::OnAttachmentBeginOverlap);
 
     bMoving = true;
 
@@ -52,7 +52,7 @@ void UCSubAction_Harpoon::Begin_SubAction_Implementation()
 
         if (!!character)
         {
-            character->GetCapsuleComponent()->SetCollisionProfileName("Sword_SubAction");
+            character->GetCapsuleComponent()->SetCollisionProfileName("Sword_ChargeAction");
 
             Overlapped.Add(character);
         }
@@ -75,9 +75,9 @@ void UCSubAction_Harpoon::Begin_SubAction_Implementation()
 
 }
 
-void UCSubAction_Harpoon::End_SubAction_Implementation()
+void UCChargeAction_Harpoon::End_ChargeAction_Implementation()
 {
-    Super::End_SubAction_Implementation();
+    Super::End_ChargeAction_Implementation();
 
     Attachment->OnAttachmentBeginOverlap.Remove(this, "OnAttachmentBeginOverlap");
     Attachment->OnAttachmentBeginOverlap.AddDynamic(DoAction, &UCDoAction::OnAttachmentBeginOverlap);
@@ -85,7 +85,7 @@ void UCSubAction_Harpoon::End_SubAction_Implementation()
     bMoving = false;
 
     State->SetDefaultMode();
-    State->OffSubActionMode();
+    State->OffChargeActionMode();
 
     Movement->OnMovable();
     Movement->DisableFixedCamera();
@@ -98,7 +98,7 @@ void UCSubAction_Harpoon::End_SubAction_Implementation()
 
 }
 
-void UCSubAction_Harpoon::Tick_Implementation(float InDeltaTime)
+void UCChargeAction_Harpoon::Tick_Implementation(float InDeltaTime)
 {
     Super::Tick_Implementation(InDeltaTime);
     CheckFalse(bMoving);
@@ -119,7 +119,7 @@ void UCSubAction_Harpoon::Tick_Implementation(float InDeltaTime)
 
 }
 
-void UCSubAction_Harpoon::OnAttachmentBeginOverlap(ACharacter* InAttacker, AActor* InAttackCuaser, ACharacter* InOther)
+void UCChargeAction_Harpoon::OnAttachmentBeginOverlap(ACharacter* InAttacker, AActor* InAttackCuaser, ACharacter* InOther)
 {
     CheckNull(InOther);
 

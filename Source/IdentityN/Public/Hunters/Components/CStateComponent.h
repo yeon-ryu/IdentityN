@@ -22,7 +22,7 @@ public:
     FORCEINLINE bool IsActionMode() { return Type == EStateType::Action; }
     FORCEINLINE bool IsHittedMode() { return Type == EStateType::Damaged; }
 
-    FORCEINLINE bool IsSubActionMode() { return bInSubActionMode; }
+    FORCEINLINE bool IsChargeActionMode() { return bInChargeActionMode; }
 
 public:	
 	UCStateComponent();
@@ -39,8 +39,8 @@ public:
     void SetActionMode();
     void SetDamagedMode();
 
-    void OnSubActionMode();
-    void OffSubActionMode();
+    void OnChargeActionMode();
+    void OffChargeActionMode();
 
 private:
     void ChangeType(EStateType InType);
@@ -52,6 +52,6 @@ private:
     EStateType Type = EStateType::Default;
 
 private:
-    bool bInSubActionMode;
+    bool bInChargeActionMode;
 
 };
