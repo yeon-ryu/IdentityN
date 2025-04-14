@@ -35,7 +35,7 @@ public:
     float DamageSpeedPer = 5.0f;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = SBuff)
-    float DamageSpeedSeconds;
+    float DamageSpeedSeconds = 2.0f;
 
     // 3시 인격 - 마지막 희망
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = SBuff)
@@ -50,6 +50,5 @@ public:
     // 트리거 : 모든 암호기 해독
     void CompleteDecode();
 
-private:
     void SetInitData();
 };

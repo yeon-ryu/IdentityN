@@ -43,8 +43,13 @@ private:
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
     class UInputAction* IA_Crouch;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Status, meta = (AllowPrivateAccess = "true"))
     float runSpeed = 380.0f;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Status, meta = (AllowPrivateAccess = "true"))
     float crouchSpeed = 114.0f;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Status, meta = (AllowPrivateAccess = "true"))
     float crawlSpeed = 44.0f;
 
 public:
@@ -63,6 +68,5 @@ public:
 
     void BuffSpeed(float per, int seconds);
 
-private:
     void SetInitData();
 };

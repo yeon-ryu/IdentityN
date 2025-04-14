@@ -14,10 +14,10 @@
 #include "../../../../Plugins/EnhancedInput/Source/EnhancedInput/Public/InputAction.h"
 #include "UObject/ConstructorHelpers.h"
 #include "Survivor/Animations/SAnimInstance.h"
-#include "IdentityNGameMode.h"
 #include "Utilities/CLog.h"
 #include "Survivor/Components/SBuff.h"
 #include "Survivor/Components/SInteractionItem.h"
+#include "IdentityNGameInstance.h"
 
 // Sets default values
 ASurvivor::ASurvivor()
@@ -78,10 +78,11 @@ void ASurvivor::BeginPlay()
         AnimInstance = Cast<USAnimInstance>(GetMesh()->GetAnimInstance());
     }
 
-
-    auto gm = Cast<AIdentityNGameMode>(GetWorld()->GetAuthGameMode());
-    SurvivorData = gm->SurvivorDataMap.Find(Id);
-    SetInitData();
+    auto gi = Cast<UIdentityNGameInstance>(GetWorld()->GetGameInstance());
+    if(gi) {
+        SurvivorData = gi->SurvivorDataMap.Find(Id);
+        SetInitData();
+    }
 }
 
 // Called every frame
@@ -227,6 +228,10 @@ void ASurvivor::SetInitData()
     if (SurvivorData == nullptr) return;
 
     Name = SurvivorData->Name;
+
+    MoveComp->SetInitData();
+    BuffComp->SetInitData();
+    InteractionItemComp->SetInitData();
 }
 
 void ASurvivor::ProcessDeadGuage()

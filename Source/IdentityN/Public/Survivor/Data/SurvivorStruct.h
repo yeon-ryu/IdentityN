@@ -3,13 +3,17 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Engine/DataTable.h"
 #include "SurvivorStruct.generated.h"
 
 USTRUCT(Atomic, BlueprintType)
-struct FSurvivorData {
-    GENERATED_USTRUCT_BODY()
+struct FSurvivorData : public FTableRowBase {
+    GENERATED_BODY()
 
 public:
+    UPROPERTY(BlueprintReadWrite)
+    FString RowName;
+
     UPROPERTY(BlueprintReadWrite)
     int32 Id;
 
@@ -51,9 +55,6 @@ public:
 
     UPROPERTY(BlueprintReadWrite)
     float PassWindowFast;
-
-    UPROPERTY(BlueprintReadWrite)
-    float PassWindowNormal;
 
     UPROPERTY(BlueprintReadWrite)
     float PassWindowSlow;

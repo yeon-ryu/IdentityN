@@ -23,8 +23,7 @@ void USInteractionItem::BeginPlay()
     me = Cast<ASurvivor>(GetOwner());
     if (me == nullptr) return;
 
-    SetInitData();
-	
+    //SetInitData();
 }
 
 
@@ -142,13 +141,11 @@ void USInteractionItem::SetInitData()
     // 서버에 있는 csv 에서 읽어온 데이터 중 SurvivorId 로 데이터 가져와서 세팅
     auto data = me->SurvivorData;
 
-    if (data == nullptr) {
-        // 값 못 가져왔을 때 디폴트 값
-        DecodeTime = 5.0f; // 81.0f;
-        DecodeFailPer = 1.0f;
-        DecodeFailTime = 2.0f;
-        OpenDoorTime = 10.0f; // 18.0f;
-        return;
+    if (data) {
+        DecodeTime = data->DecodeTime;
+        DecodeFailPer = data->DecodeFailPer;
+        DecodeFailTime = data->DecodeFailTime;
+        OpenDoorTime = data->OpenDoorTime;
     }
 }
 

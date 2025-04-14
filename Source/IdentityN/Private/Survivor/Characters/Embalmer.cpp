@@ -10,8 +10,8 @@
 AEmbalmer::AEmbalmer()
 {
     // 캐릭터 식별자
-    Id = 1;
-    Name = "Embalmer"; // 이 라인 csv 데이터 추가 후 삭제
+    //Id = 1;
+    Id = 2; // 테스트용 수치 가진 캐릭터 Id
 
     // 캐릭터 메시
     ConstructorHelpers::FObjectFinder<USkeletalMesh> TempMesh(TEXT("/Script/Engine.SkeletalMesh'/Game/RGY/Modelings/embalmer/embalmer.embalmer'"));
