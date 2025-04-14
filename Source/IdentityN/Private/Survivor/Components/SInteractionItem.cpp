@@ -4,6 +4,7 @@
 #include "../../../../Plugins/EnhancedInput/Source/EnhancedInput/Public/EnhancedInputComponent.h"
 #include "Survivor/Animations/SAnimInstance.h"
 #include "Items/Door.h"
+#include "Kismet/KismetMathLibrary.h"
 
 USInteractionItem::USInteractionItem()
 {
@@ -49,9 +50,8 @@ void USInteractionItem::Decode(const struct FInputActionValue& value)
         }
         
         // 해독 / 오픈 하려는 물체 방향을 보도록
-        //FVector dir = NearDoor->GetActorLocation() - me->GetActorLocation();
-        //dir.Z = 0.0f;
-        //me->AddMovementInput(dir.GetSafeNormal());
+        FVector dir = NearDoor->GetActorLocation() - me->GetActorLocation();
+        me->SetActorRotation(FRotator(0.0f, UKismetMathLibrary::ClampAxis(dir.GetSafeNormal().Rotation().Yaw), 0.0f));
 
         NearDoor->StartOpen(me);
 
@@ -61,9 +61,8 @@ void USInteractionItem::Decode(const struct FInputActionValue& value)
             return;
         }
 
-        //FVector dir = NearChipher->GetActorLocation() - me->GetActorLocation();
-        //dir.Z = 0.0f;
-        //me->AddMovementInput(dir.GetSafeNormal());
+        FVector dir = NearChipher->GetActorLocation() - me->GetActorLocation();
+        me->SetActorRotation(FRotator(0.0f, UKismetMathLibrary::ClampAxis(dir.GetSafeNormal().Rotation().Yaw), 0.0f));
 
         NearChipher->StartDecode(me);
     }
