@@ -241,8 +241,6 @@ void ASurvivor::ProcessDeadGuage()
 {
     if(IsOutofGame()) return;
 
-    // 치료 받는 중이면 일단 이 함수는 return 할 것
-
 
     CrawlCurrentTime += GetWorld()->GetDeltaSeconds();
 
