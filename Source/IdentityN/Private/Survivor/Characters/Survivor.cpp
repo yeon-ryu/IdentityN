@@ -150,7 +150,7 @@ float ASurvivor::TakeDamage(float Damage, struct FDamageEvent const& DamageEvent
         // 해당 애니메이션이 종료될 경우 falling 이 false 가 되고 그러면 crawl 상태로 움직일 수 있게 됨
         AnimInstance->falling = true;
         FVector dir = GetActorLocation() - DamageCauser->GetActorLocation();
-        LaunchCharacter(dir * 50, false, false);
+        LaunchCharacter(dir * 100, false, false);
 
         // 과다출혈 타이머 초기화
         CrawlCurrentTime = 0.0f;
