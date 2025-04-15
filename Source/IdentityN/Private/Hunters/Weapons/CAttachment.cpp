@@ -3,6 +3,7 @@
 #include "GameFramework/Character.h"
 #include "Components/SceneComponent.h"
 #include "Components/ShapeComponent.h"
+#include "Engine/DamageEvents.h"
 
 ACAttachment::ACAttachment()
 {
@@ -58,6 +59,9 @@ void ACAttachment::OnComponentBeginOverlap(UPrimitiveComponent* OverlappedCompon
 {
     CheckTrue(OwnerCharacter == OtherActor);
     CheckTrue(OwnerCharacter->GetClass() == OtherActor->GetClass());
+
+    if(ACharacter* character = Cast<ACharacter>(OtherActor))
+        character->TakeDamage(1, FDamageEvent(), GetOwner()->GetInstigatorController(), this);
 
     if (OnAttachmentBeginOverlap.IsBound())
         OnAttachmentBeginOverlap.Broadcast(OwnerCharacter, this, Cast<ACharacter>(OtherActor));

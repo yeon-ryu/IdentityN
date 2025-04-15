@@ -19,6 +19,9 @@ private:
     UPROPERTY(VisibleAnywhere, Category = "Character")
     class USphereComponent* Fear;
 
+    UPROPERTY(VisibleAnywhere, Category = "Character")
+    class USplineComponent* Spline;
+
 private:
     UPROPERTY(VisibleAnywhere, Category = "Components")
     class UCStateComponent* State;

@@ -52,7 +52,7 @@ void UCDoAction_Combo::OnAttachmentBeginOverlap(ACharacter* InAttacker, AActor* 
     Hitted.AddUnique(InOther);
 
     CheckTrue(HitDatas.Num() - 1 < Index);
-    //HitDatas[Index].SendDamage(InAttacker, InAttackCauser, InOther);
+    HitDatas[Index].SendDamage(InAttacker, InAttackCauser, InOther);
 
 }
 

@@ -128,6 +128,6 @@ void UCChargeAction_Harpoon::OnAttachmentBeginOverlap(ACharacter* InAttacker, AA
 
     Hitted.AddUnique(InOther);
 
-    //HitData.SendDamage(Owner, InAttackCuaser, InOther);
+    HitData.SendDamage(Owner, InAttackCuaser, InOther);
 
 }
