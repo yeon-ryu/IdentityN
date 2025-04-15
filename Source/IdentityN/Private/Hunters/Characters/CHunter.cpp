@@ -3,6 +3,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Components/SphereComponent.h"
+#include "Components/SplineComponent.h"
 #include "Hunters/Components/CStateComponent.h"
 #include "Hunters/Components/CMovementComponent.h"
 #include "Hunters/Components/CWeaponComponent.h"
@@ -34,8 +35,8 @@ void ACHunter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-    if (Target)
-        CLog::Print(Target->GetName());
+    //if (Target)
+    //    CLog::Print(Target->GetName());
 }
 
 void ACHunter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -78,6 +79,9 @@ void ACHunter::InitializeCharacters()
     Fear->OnComponentBeginOverlap.AddDynamic(this, &ACHunter::OnComponentBeginOverlap);
     Fear->OnComponentEndOverlap.AddDynamic(this, &ACHunter::OnComponentEndOverlap);
 
+    // Spline
+    CHelpers::CreateComponent<USplineComponent>(this, &Spline, "Spline", RootComponent);
+
     // Mapping Context
     CHelpers::GetAsset<UInputMappingContext>(&MappingContext, TEXT("/Script/EnhancedInput.InputMappingContext'/Game/PJS/Inputs/IMC_Hunter.IMC_Hunter'"));
 
@@ -94,28 +98,28 @@ void ACHunter::InitializeCharacters()
 
 void ACHunter::OnComponentBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-    if (ACharacter* character = Cast<ACharacter>(OtherActor))
-    {
-        if (character == this) return;
+    //if (ACharacter* character = Cast<ACharacter>(OtherActor))
+    //{
+    //    if (character == this) return;
 
-        Target = character;
+    //    Target = character;
 
-        CLog::Print(OtherActor->GetName());
+    //    CLog::Print(OtherActor->GetName());
 
-        CLog::Print("In The Radius Of Fear");
-    }
+    //    CLog::Print("In The Radius Of Fear");
+    //}
 
 }
 
 void ACHunter::OnComponentEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-    if (Target == Cast<ACharacter>(OtherActor))
-    {
-        CLog::Print(OtherActor->GetName());
+    //if (Target == Cast<ACharacter>(OtherActor))
+    //{
+    //    CLog::Print(OtherActor->GetName());
 
-        CLog::Print("Out The Radius Of Fear");
+    //    CLog::Print("Out The Radius Of Fear");
 
-        Target = nullptr;
-    }
+    //    Target = nullptr;
+    //}
 
 }

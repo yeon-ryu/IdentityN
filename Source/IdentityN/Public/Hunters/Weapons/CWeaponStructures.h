@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
+#include "Engine/DamageEvents.h"
 #include "CWeaponStructures.generated.h"
 
 USTRUCT()
@@ -98,6 +99,15 @@ public:
     void PlayEffect(UWorld* InWorld, const FVector& InLocation, const FRotator& InRotation);
 };
 
+USTRUCT()
+struct FActionDamageEvent
+    : public FDamageEvent
+{
+    GENERATED_BODY()
+
+public:
+    FHitData* HitData;
+};
 
 UCLASS()
 class IDENTITYN_API UCWeaponStructures : public UObject
