@@ -7,6 +7,7 @@
 #include "Hunters/Components/CStateComponent.h"
 #include "Hunters/Components/CMovementComponent.h"
 #include "Hunters/Components/CWeaponComponent.h"
+#include "Survivor/Characters/Survivor.h"
 #include "InputMappingContext.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
@@ -52,6 +53,12 @@ void ACHunter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
         Weapon->OnBindEnhancedInputSystem(EnhancedInput);
     }
 
+}
+
+void ACHunter::EscapeSurvivor()
+{
+    Weapon->OnCapture(FInputActionValue());
+    
 }
 
 void ACHunter::InitializeCharacters()

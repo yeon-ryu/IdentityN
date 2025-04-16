@@ -47,6 +47,9 @@ public:
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+public:
+    void EscapeSurvivor();
+
 private:
     void InitializeCharacters();
 

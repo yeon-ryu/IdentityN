@@ -94,9 +94,10 @@ private:
     void OnChargingSkill(const struct FInputActionValue& InVal);
     void OnShootSkill(const struct FInputActionValue& InVal);
 
-    void OnCapture(const struct FInputActionValue& InVal);
-
     void OnTeleport(const struct FInputActionValue& InVal);
+
+public:    
+    void OnCapture(const struct FInputActionValue& InVal);
 
 private:
     void SetMode(EWeaponType InType);
@@ -122,6 +123,7 @@ private:
 
     bool bSelect = false;
 
+public:
     class ACharacter* Candidate;
 
 };
