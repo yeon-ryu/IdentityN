@@ -4,6 +4,23 @@
 #include "GameFramework/Character.h"
 #include "CHunter.generated.h"
 
+USTRUCT(BlueprintType)
+struct FHunterCharacteristics : public FTableRowBase
+{
+    GENERATED_BODY()
+
+public:
+    UPROPERTY(VisibleAnywhere)
+    float BasicSpeed;
+
+    UPROPERTY(VisibleAnywhere)
+    float SkillSpeed = 1;
+
+    UPROPERTY(VisibleAnywhere)
+    float FearRadius;
+
+};
+
 UCLASS(Abstract, NotBlueprintable)
 class IDENTITYN_API ACHunter : public ACharacter
 {
