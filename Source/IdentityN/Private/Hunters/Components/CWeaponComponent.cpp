@@ -239,8 +239,6 @@ void UCWeaponComponent::OnCapture(const FInputActionValue& InVal)
         return;
     }
 
-    CLog::Print(TEXT("포획 탐색 시작"));
-
     constexpr float radius = 50.0f;
 
     // 감시자 위치
@@ -269,14 +267,17 @@ void UCWeaponComponent::OnCapture(const FInputActionValue& InVal)
     // HP가 0인 생존자 탐색
     for (auto& result : results)
     {
-        ACharacter* candidate = Cast<ACharacter>(result.GetActor());
+        ASurvivor* candidate = Cast<ASurvivor>(result.GetActor());
         if (!candidate or candidate == GetOwner())
             continue;
 
         // TODO: 체력 확인
+        if (candidate->bCrawl)
+        {
+            Candidate = candidate;
 
-        Candidate = candidate;
-        break;
+            break;
+        }
     }
 
 }
