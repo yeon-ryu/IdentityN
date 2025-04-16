@@ -1,6 +1,7 @@
 ﻿#include "Hunters/Notifies/CAnimNotifyState_Skill.h"
 #include "Global.h"
 #include "Hunters/Components/CWeaponComponent.h"
+#include "Hunters/Weapons/CAttachment.h"
 #include "Hunters/Weapons/Skills/CSkill.h"
 
 FString UCAnimNotifyState_Skill::GetNotifyName_Implementation() const
@@ -18,6 +19,8 @@ void UCAnimNotifyState_Skill::NotifyBegin(USkeletalMeshComponent* MeshComp, UAni
     UCWeaponComponent* weapon = CHelpers::GetComponent<UCWeaponComponent>(MeshComp->GetOwner());
     CheckNull(weapon);
     CheckNull(weapon->GetChargeAction());
+
+    weapon->GetAttachment()->SetActorHiddenInGame(true);
 
     weapon->GetSkill()->Begin_Skill();
 
