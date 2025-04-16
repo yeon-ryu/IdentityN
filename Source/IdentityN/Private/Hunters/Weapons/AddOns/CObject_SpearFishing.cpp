@@ -29,7 +29,6 @@ void ACObject_SpearFishing::BeginPlay()
     Ignores.Add(GetOwner());
 
     Capsule->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-    //Capsule->OnComponentHit.AddDynamic(this, &ACObject_SpearFishing::OnComponentHit);
     Capsule->OnComponentBeginOverlap.AddDynamic(this, &ACObject_SpearFishing::OnComponentBeginOverlap);
 
     Projectile->Velocity = GetOwner()->GetActorForwardVector() * Projectile->InitialSpeed;
@@ -51,57 +50,20 @@ void ACObject_SpearFishing::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
 
-    if (bReturn)
-    {
-        Projectile->Velocity = (GetOwner()->GetActorLocation() - GetActorLocation()).GetSafeNormal() * Projectile->InitialSpeed;
+    if (!bReturn) return;
 
-        if (FVector::Dist(GetActorLocation(), GetOwner()->GetActorLocation()) <= 10)
-        {
-            UCWeaponComponent* weapon = CHelpers::GetComponent<UCWeaponComponent>(GetOwner());
-            CheckNull(weapon);
-            CheckNull(weapon->GetAttachment());
-            weapon->GetAttachment()->SetActorHiddenInGame(false);
-            weapon->bCanSkill = true;
-            weapon->bUsedSkill = false;
+    UpdateReturnMovement();
 
-            Destroy();
-        }
-    }
-
-}
-
-void ACObject_SpearFishing::Return(FVector InDestination)
-{
-    bReturn = true;
-
-    SetActorRotation(UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), InDestination));
-    Projectile->Velocity = InDestination - GetActorLocation();
-    Projectile->Activate();
-
-}
-
-void ACObject_SpearFishing::OnComponentHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
-{
-    //for (AActor* actor : Ignores)
-    //    CheckTrue(actor == OtherActor);
-
-    if (OtherActor)
-    {
-        Projectile->Deactivate();
-        Capsule->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-    }
-
-    //if (!!OtherActor and OnHit.IsBound())
-    //    OnHit.Broadcast(this, OtherActor);
-
-    //ACharacter* character = Cast<ACharacter>(OtherActor);
-    //if (!!character && OnHit.IsBound())
-    //    OnHit.Broadcast(this, character);
+    if (HasReachedOwner())
+        CompleteReturnToOwner();
 
 }
 
 void ACObject_SpearFishing::OnComponentBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+    if (bReturn) HandleReturnOverlap(OtherActor);
+    else HandleAttackOverlap(OtherActor);
+
     if (bReturn)
     {
         if (OtherActor != GetOwner()) return;
@@ -122,5 +84,92 @@ void ACObject_SpearFishing::OnComponentBeginOverlap(UPrimitiveComponent* Overlap
         Projectile->Deactivate();
         Capsule->SetCollisionEnabled(ECollisionEnabled::NoCollision);
     }
+
+}
+
+// 창의 반환 동작 초기화
+void ACObject_SpearFishing::Return(FVector InDestination)
+{
+    bReturn = true;
+
+    // 반환 방향으로 회전 설정
+    SetActorRotation(UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), InDestination));
+
+    // 반환 속도 초기화 (속도 벡터 = 목적지 방향 벡터)
+    FVector direction = (InDestination - GetActorLocation()).GetSafeNormal();
+    Projectile->Velocity = direction * Projectile->InitialSpeed;
+
+    // 발사체 활성화
+    Projectile->Activate();
+
+}
+
+// 매 프레임마다 되돌아오는 방향으로 이동 처리
+void ACObject_SpearFishing::UpdateReturnMovement()
+{
+    FVector ownerLocation = GetOwner()->GetActorLocation();
+    FVector direction = (ownerLocation - GetActorLocation()).GetSafeNormal();
+
+    Projectile->Velocity = direction * Projectile->InitialSpeed;
+
+}
+
+// 반환 목적지(플레이어)와 충분히 가까워졌는지 판단
+bool ACObject_SpearFishing::HasReachedOwner() const
+{
+    constexpr float reachThreshold = 50.0f;
+    float distance = FVector::Dist(GetActorLocation(), GetOwner()->GetActorLocation());
+
+    return distance <= reachThreshold;
+
+}
+
+void ACObject_SpearFishing::CompleteReturnToOwner()
+{
+    UCWeaponComponent* weapon = CHelpers::GetComponent<UCWeaponComponent>(GetOwner());
+    CheckNull(weapon);
+
+    AActor* attachment = weapon->GetAttachment();
+    CheckNull(attachment);
+
+    attachment->SetActorHiddenInGame(false);
+    weapon->bCanSkill = true;
+    weapon->bUsedSkill = false;
+
+    Destroy();
+
+}
+
+// 되돌아오는 상태에서의 충돌 처리
+void ACObject_SpearFishing::HandleReturnOverlap(AActor* InOtherActor)
+{
+    if (InOtherActor != GetOwner())
+        return;
+
+    DisableSpearCollision();
+
+}
+
+// 공격 상태에서의 충돌 처리
+void ACObject_SpearFishing::HandleAttackOverlap(AActor* InOtherActor)
+{
+    if (InOtherActor == GetOwner())
+        return;
+
+    if (ACharacter* character = Cast<ACharacter>(InOtherActor))
+    {
+        constexpr int32 BaseDamage = 1;
+        character->TakeDamage(BaseDamage, FDamageEvent(), GetOwner()->GetInstigatorController(), this);
+    }
+
+    DisableSpearCollision();
+
+}
+
+// 창의 충돌 비활성화 처리
+void ACObject_SpearFishing::DisableSpearCollision()
+{
+    Projectile->Deactivate();
+    Capsule->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
 }

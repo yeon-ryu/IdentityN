@@ -24,10 +24,13 @@ private:
     class UInputAction* IA_Action;
 
     UPROPERTY(EditDefaultsOnly, Category = "EnhancedInput")
-    class UInputAction* IA_ChargeAction;
+    class UInputAction* IA_Skill;
 
     UPROPERTY(EditDefaultsOnly, Category = "EnhancedInput")
-    class UInputAction* IA_Skill;
+    class UInputAction* IA_Capture;
+
+    UPROPERTY(EditDefaultsOnly, Category = "EnhancedInput")
+    class UInputAction* IA_Telport;
 
 private:
     UPROPERTY(EditAnywhere, Category = "DataAsset")
@@ -85,11 +88,15 @@ private:
     void OffChargeAction(const struct FInputActionValue& InVal);
 
 private:
-    void SelectAction(const struct FInputActionValue& InVal);
-    void InitAction(const struct FInputActionValue& InVal);
+    void OnSelectAction(const struct FInputActionValue& InVal);
+    void OnInitAction(const struct FInputActionValue& InVal);
 
-    void ChargingSkill(const struct FInputActionValue& InVal);
-    void ShootSkill(const struct FInputActionValue& InVal);
+    void OnChargingSkill(const struct FInputActionValue& InVal);
+    void OnShootSkill(const struct FInputActionValue& InVal);
+
+    void OnCapture(const struct FInputActionValue& InVal);
+
+    void OnTeleport(const struct FInputActionValue& InVal);
 
 private:
     void SetMode(EWeaponType InType);
@@ -101,6 +108,10 @@ public:
 private:
     EWeaponType Type = EWeaponType::MAX;
 
+public:
+    bool bCanSkill = true;
+    bool bUsedSkill = false;
+
 private:
     UPROPERTY()
     class UCWeaponData* Datas[(int32)EWeaponType::MAX];
@@ -111,8 +122,6 @@ private:
 
     bool bSelect = false;
 
-public:
-    bool bCanSkill = true;
-    bool bUsedSkill = false;
+    class ACharacter* Candidate;
 
 };

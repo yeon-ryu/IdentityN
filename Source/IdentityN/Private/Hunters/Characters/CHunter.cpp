@@ -56,6 +56,9 @@ void ACHunter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 void ACHunter::InitializeCharacters()
 {
+    // Capsule
+    GetCapsuleComponent()->SetRelativeScale3D(FVector(1.3));
+
     // Mesh
     GetMesh()->SetRelativeLocation(FVector(0, 0, ~110 + 1));
     GetMesh()->SetRelativeRotation(FQuat(FRotator(0, 270, 0)));
