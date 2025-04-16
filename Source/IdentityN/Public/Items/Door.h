@@ -53,7 +53,7 @@ private:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
     class UBoxComponent* EscapeCollision;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gauge, meta = (AllowPrivateAccess = "true"))
     float OpenGauge = 0.0f;
 
 

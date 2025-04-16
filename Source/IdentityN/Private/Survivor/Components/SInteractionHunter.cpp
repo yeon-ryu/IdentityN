@@ -31,7 +31,8 @@ void USInteractionHunter::TickComponent(float DeltaTime, ELevelTick TickType, FA
     }
 
     if(CatchHunter != nullptr) {
-        // 풍선 게이지 시간에 따라 생존자 데이터에 따라 차도록 로직 추가
+        BalloonGauge += DeltaTime / BalloonedFallTime;
+        CLog::Print(FString::Printf(TEXT("Balloon... %.2f"), BalloonGauge), -1, -1, FColor::Magenta);
 
         FRotator hRot = CatchHunter->GetActorRotation();
         me->SetActorRotation(FRotator(0.0f, UKismetMathLibrary::ClampAxis(hRot.Yaw), 0.0f));
@@ -103,6 +104,14 @@ void USInteractionHunter::EscapeBallooned()
 void USInteractionHunter::TryEscapeBallooned(float strength)
 {
     BalloonGauge += strength;
+}
+
+void USInteractionHunter::SetInitData()
+{
+    auto data = me->SurvivorData;
+    if (data) {
+        BalloonedFallTime = data->BalloonedFallTime;
+    }
 }
 
 void USInteractionHunter::OnSenseOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)

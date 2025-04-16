@@ -262,6 +262,7 @@ void ASurvivor::SetInitData()
     MoveComp->SetInitData();
     BuffComp->SetInitData();
     InteractionItemComp->SetInitData();
+    InteractionHunterComp->SetInitData();
 }
 
 void ASurvivor::ProcessDeadGuage()

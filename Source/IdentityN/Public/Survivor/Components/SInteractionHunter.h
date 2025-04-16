@@ -34,8 +34,11 @@ private:
 
     class ACHunter* CatchHunter;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Gauge, meta = (AllowPrivateAccess = "true"))
     float BalloonGauge = 0.0f;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Status, meta = (AllowPrivateAccess = "true"))
+    float BalloonedFallTime = 16.0f;
 
 public:
     void CheckDistanceHunter();
@@ -47,6 +50,8 @@ public:
     void EscapeBallooned();
 
     void TryEscapeBallooned(float strength);
+
+    void SetInitData();
 
 private:
 UFUNCTION()
