@@ -76,6 +76,10 @@ private:
     UFUNCTION()
     void OnComponentEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
+public:
+    UPROPERTY(EditDefaultsOnly, Category = "DataTable")
+    class UDataTable* Characteristic;
+
 private:
     UPROPERTY()
     class ACharacter* Target;
