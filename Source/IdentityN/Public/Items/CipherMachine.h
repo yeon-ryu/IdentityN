@@ -64,6 +64,8 @@ public:
 
     void CipherComplete();
 
+    float GetProgressRate();
+
 private:
     // 오버랩 이벤트로 들어올 때 서바이버의 bool 을 true 로 해주고
     // end 오버랩 이벤트 때 Remove 서바이버 해줌
