@@ -58,8 +58,6 @@ void UCWeaponComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
     if (Candidate)
     {
         Candidate->SetActorLocation(GetOwner()->GetActorLocation() + GetOwner()->GetActorUpVector() * 200);
-        ASurvivor* survivor = Cast<ASurvivor>(Candidate);
-        survivor->CatchBallooned(Cast<ACHunter>(GetOwner()));
     }
 
 }
@@ -275,6 +273,8 @@ void UCWeaponComponent::OnCapture(const FInputActionValue& InVal)
         if (candidate->bCrawl)
         {
             Candidate = candidate;
+
+            candidate->CatchBallooned(Cast<ACHunter>(GetOwner()));
 
             break;
         }
