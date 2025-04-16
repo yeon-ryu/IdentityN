@@ -21,7 +21,10 @@ AIdentityNGameMode::AIdentityNGameMode()
 
 void AIdentityNGameMode::BeginPlay()
 {
-
+    for (TActorIterator<ACipherMachine> it(GetWorld()); it; ++it) {
+        ACipherMachine* machine = *it;
+        cipherMachineList.Add(machine);
+    }
 }
 
 void AIdentityNGameMode::AddDecodeCipher()
@@ -46,11 +49,11 @@ void AIdentityNGameMode::AddDecodeCipher()
         for (TActorIterator<ADoor> it(GetWorld()); it; ++it) {
             ADoor* door = *it;
             door->PowerOn();
+            doorList.Add(door);
         }
 
         // 맵의 모든 해독기를 정지시킨다.
-        for (TActorIterator<ACipherMachine> it(GetWorld()); it; ++it) {
-            ACipherMachine* machine = *it;
+        for (auto machine : cipherMachineList) {
             machine->CipherComplete();
         }
     }

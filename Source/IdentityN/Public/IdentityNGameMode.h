@@ -23,6 +23,12 @@ public:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = SurvivorGameData)
     TArray<class ASurvivor*> eliminateList;
 
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = GamePlay)
+    TArray<class ADoor*> doorList;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = GamePlay)
+    TArray<class ACipherMachine*> cipherMachineList;
+
 private:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = GamePlay, meta=(AllowPrivateAccess = "true"))
     int32 decodeCipherCount = 0;
