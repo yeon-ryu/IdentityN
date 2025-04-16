@@ -193,6 +193,33 @@ bool ASurvivor::IsOutofGame()
     return false;
 }
 
+void ASurvivor::SetHP(float hp)
+{
+    HP = hp;
+}
+
+void ASurvivor::CatchBallooned(ACHunter* catchHunter)
+{
+    InteractionHunterComp->CatchBallooned(catchHunter);
+}
+
+void ASurvivor::ReleaseBallooned()
+{
+    InteractionHunterComp->ReleaseBallooned();
+}
+
+void ASurvivor::EscapeBallooned()
+{
+    InteractionHunterComp->EscapeBallooned();
+}
+
+void ASurvivor::TryEscapeBallooned()
+{
+    // 임시 값
+    float strength = 0.05f;
+    InteractionHunterComp->TryEscapeBallooned(strength);
+}
+
 void ASurvivor::Look(const FInputActionValue& Value)
 {
     FVector2D LookAxisVector = Value.Get<FVector2D>();
@@ -239,9 +266,11 @@ void ASurvivor::SetInitData()
 
 void ASurvivor::ProcessDeadGuage()
 {
-    if(IsOutofGame()) return;
+    if(IsOutofGame() || State == ESurvivorState::BALLOONED) return;
 
-    if (State == ESurvivorState::BALLOONED || State == ESurvivorState::SEAT) {
+    if (State == ESurvivorState::SEAT) {
+        bCrawl = false;
+        HP = 1.0f;
         return;
     }
 

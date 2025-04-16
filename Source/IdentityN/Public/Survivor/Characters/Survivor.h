@@ -131,6 +131,16 @@ public:
 
     bool IsOutofGame();
 
+    void SetHP(float hp);
+
+    void CatchBallooned(class ACHunter* catchHunter);
+
+    void ReleaseBallooned();
+
+    void EscapeBallooned();
+
+    void TryEscapeBallooned();
+
 protected:
     /** Called for looking input */
     void Look(const struct FInputActionValue& Value);

@@ -3,6 +3,7 @@
 #include "Hunters/Characters/CHunter.h"
 #include "Utilities/CLog.h"
 #include "Components/CapsuleComponent.h"
+#include "Survivor/Animations/SAnimInstance.h"
 
 USInteractionHunter::USInteractionHunter()
 {
@@ -50,6 +51,45 @@ void USInteractionHunter::CheckDistanceHunter()
     float dis = loc.Length();
 
     CLog::Print(FString::Printf(TEXT("Hunter is Near! : %.2f"), dis), -1, -1, FColor::Green);
+}
+
+void USInteractionHunter::CatchBallooned(ACHunter* hunter)
+{
+    catchHunter = hunter;
+
+    me->State = ESurvivorState::BALLOONED;
+    me->AnimInstance->State = ESurvivorState::BALLOONED;
+
+    BalloonGauge = 0.0f;
+}
+
+void USInteractionHunter::ReleaseBallooned()
+{
+    catchHunter = nullptr;
+
+    me->State = ESurvivorState::IDLE;
+    me->AnimInstance->State = ESurvivorState::IDLE;
+}
+
+void USInteractionHunter::EscapeBallooned()
+{
+    catchHunter = nullptr;
+
+    me->State = ESurvivorState::IDLE;
+    me->AnimInstance->State = ESurvivorState::IDLE;
+    me->bCrawl = false;
+    me->SetHP(1.0f);
+
+    // 헌터에도 알려줘야할듯
+}
+
+void USInteractionHunter::TryEscapeBallooned(float strength)
+{
+    BalloonGauge += strength;
+    if (BalloonGauge > 1.0f) {
+        EscapeBallooned();
+        BalloonGauge = 0.0f;
+    }
 }
 
 void USInteractionHunter::OnSenseOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)

@@ -55,6 +55,8 @@ void USMove::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponent
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
+    if(me->State != ESurvivorState::IDLE) return;
+
     if (!bCrawl && me->bCrawl) {
         ChangeCrawl(true);
     }
@@ -72,6 +74,11 @@ void USMove::SetupInputBinding(class UEnhancedInputComponent* input)
 void USMove::Move(const struct FInputActionValue& Value)
 {
     if (me->Controller == nullptr || me->IsOutofGame()) return;
+
+    if (me->State == ESurvivorState::BALLOONED) {
+        me->TryEscapeBallooned();
+        return;
+    }
 
     if(me->State == ESurvivorState::DECODE || me->State == ESurvivorState::OPEN || me->State == ESurvivorState::HEAL || me->State == ESurvivorState::RESCUE) {
         me->State = ESurvivorState::IDLE;
