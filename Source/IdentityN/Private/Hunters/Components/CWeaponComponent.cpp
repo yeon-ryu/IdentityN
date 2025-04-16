@@ -12,6 +12,8 @@
 #include "Hunters/Weapons/AddOns/CSkill_Object.h"
 #include "Hunters/Weapons/AddOns/CObject_SpearFishing.h"
 #include "Engine/OverlapResult.h"
+#include "Survivor/Characters/Survivor.h"
+#include "Hunters/Characters/CHunter.h"
 #include "EnhancedInputComponent.h"
 #include "InputActionValue.h"
 
@@ -54,7 +56,11 @@ void UCWeaponComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
         GetChargeAction()->Tick(DeltaTime);
 
     if (Candidate)
+    {
         Candidate->SetActorLocation(GetOwner()->GetActorLocation() + GetOwner()->GetActorUpVector() * 200);
+        ASurvivor* survivor = Cast<ASurvivor>(Candidate);
+        survivor->CatchBallooned(Cast<ACHunter>(GetOwner()));
+    }
 
 }
 
@@ -226,6 +232,8 @@ void UCWeaponComponent::OnCapture(const FInputActionValue& InVal)
     if (Candidate)
     {
         Candidate->SetActorLocation(GetOwner()->GetActorLocation() + GetOwner()->GetActorForwardVector() * 150);
+        ASurvivor* survivor = Cast<ASurvivor>(Candidate);
+        survivor->ReleaseBallooned();
         Candidate = nullptr;
 
         return;
