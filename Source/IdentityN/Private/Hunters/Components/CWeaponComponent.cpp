@@ -11,12 +11,18 @@
 #include "Hunters/Weapons/Skills/CSkill.h"
 #include "Hunters/Weapons/AddOns/CSkill_Object.h"
 #include "Hunters/Weapons/AddOns/CObject_SpearFishing.h"
+#include "Engine/OverlapResult.h"
 #include "EnhancedInputComponent.h"
 #include "InputActionValue.h"
 
 UCWeaponComponent::UCWeaponComponent()
 {
 	PrimaryComponentTick.bCanEverTick = true;
+
+    CHelpers::GetAsset<UInputAction>(&IA_Action, TEXT("/Script/EnhancedInput.InputAction'/Game/PJS/Inputs/IA_Hunter_Action.IA_Hunter_Action'"));
+    CHelpers::GetAsset<UInputAction>(&IA_Skill, TEXT("/Script/EnhancedInput.InputAction'/Game/PJS/Inputs/IA_Hunter_Skill.IA_Hunter_Skill'"));
+    CHelpers::GetAsset<UInputAction>(&IA_Capture, TEXT("/Script/EnhancedInput.InputAction'/Game/PJS/Inputs/IA_Hunter_Capture.IA_Hunter_Capture'"));
+    CHelpers::GetAsset<UInputAction>(&IA_Telport, TEXT("/Script/EnhancedInput.InputAction'/Game/PJS/Inputs/IA_Hunter_Teleport.IA_Hunter_Teleport'"));
 
     CHelpers::GetAsset<UCWeaponAsset>(&DataAssets[0], TEXT("/Script/IdentityN.CWeaponAsset'/Game/PJS/Weapons/DA_Harpoon.DA_Harpoon'"));
 
@@ -47,20 +53,22 @@ void UCWeaponComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
     if (!!GetChargeAction())
         GetChargeAction()->Tick(DeltaTime);
 
+    if (Candidate)
+        Candidate->SetActorLocation(GetOwner()->GetActorLocation() + GetOwner()->GetActorUpVector() * 200);
+
 }
 
 void UCWeaponComponent::OnBindEnhancedInputSystem(UEnhancedInputComponent* InEnhancedInput)
 {
-    //InEnhancedInput->BindAction(IA_Action, ETriggerEvent::Started, this, &UCWeaponComponent::DoAction);
+    InEnhancedInput->BindAction(IA_Action, ETriggerEvent::Triggered, this, &UCWeaponComponent::OnSelectAction);
+    InEnhancedInput->BindAction(IA_Action, ETriggerEvent::Completed, this, &UCWeaponComponent::OnInitAction);
 
-    //InEnhancedInput->BindAction(IA_ChargeAction, ETriggerEvent::Triggered, this, &UCWeaponComponent::OnChargeAction);
-    //InEnhancedInput->BindAction(IA_ChargeAction, ETriggerEvent::Completed, this, &UCWeaponComponent::OffChargeAction);
+    InEnhancedInput->BindAction(IA_Skill, ETriggerEvent::Started, this, &UCWeaponComponent::OnChargingSkill);
+    InEnhancedInput->BindAction(IA_Skill, ETriggerEvent::Completed, this, &UCWeaponComponent::OnShootSkill);
 
-    InEnhancedInput->BindAction(IA_Action, ETriggerEvent::Triggered, this, &UCWeaponComponent::SelectAction);
-    InEnhancedInput->BindAction(IA_Action, ETriggerEvent::Completed, this, &UCWeaponComponent::InitAction);
+    InEnhancedInput->BindAction(IA_Capture, ETriggerEvent::Completed, this, &UCWeaponComponent::OnCapture);
 
-    InEnhancedInput->BindAction(IA_Skill, ETriggerEvent::Started, this, &UCWeaponComponent::ChargingSkill);
-    InEnhancedInput->BindAction(IA_Skill, ETriggerEvent::Completed, this, &UCWeaponComponent::ShootSkill);
+    InEnhancedInput->BindAction(IA_Telport, ETriggerEvent::Completed, this, &UCWeaponComponent::OnTeleport);
 
 }
 
@@ -163,13 +171,13 @@ void UCWeaponComponent::OffChargeAction(const FInputActionValue& InVal)
 
 }
 
-void UCWeaponComponent::SelectAction(const FInputActionValue& InVal)
+void UCWeaponComponent::OnSelectAction(const FInputActionValue& InVal)
 {
     ChargeTime += GetWorld()->GetDeltaSeconds();
 
 }
 
-void UCWeaponComponent::InitAction(const FInputActionValue& InVal)
+void UCWeaponComponent::OnInitAction(const FInputActionValue& InVal)
 {
     if (ChargeTime >= 1)
     {
@@ -182,7 +190,7 @@ void UCWeaponComponent::InitAction(const FInputActionValue& InVal)
 
 }
 
-void UCWeaponComponent::ChargingSkill(const FInputActionValue& InVal)
+void UCWeaponComponent::OnChargingSkill(const FInputActionValue& InVal)
 {
     if (bCanSkill)
     {
@@ -201,15 +209,81 @@ void UCWeaponComponent::ChargingSkill(const FInputActionValue& InVal)
 
 }
 
-void UCWeaponComponent::ShootSkill(const FInputActionValue& InVal)
+void UCWeaponComponent::OnShootSkill(const FInputActionValue& InVal)
 {
     if (!bCanSkill)
     {
         if (!!GetSkill())
             GetSkill()->Released();
 
-        GetAttachment()->SetActorHiddenInGame(bUsedSkill);
+        //GetAttachment()->SetActorHiddenInGame(bUsedSkill);
     }
+
+}
+
+void UCWeaponComponent::OnCapture(const FInputActionValue& InVal)
+{
+    if (Candidate)
+    {
+        Candidate->SetActorLocation(GetOwner()->GetActorLocation() + GetOwner()->GetActorForwardVector() * 150);
+        Candidate = nullptr;
+
+        return;
+    }
+
+    CLog::Print(TEXT("포획 탐색 시작"));
+
+    constexpr float radius = 50.0f;
+
+    // 감시자 위치
+    FVector location = GetOwner()->GetActorLocation();
+
+    // 캡처 대상
+    ACharacter* target = nullptr;
+
+    // 구체 범위 내 오버랩된 액터 수집
+    // #include "Engine/OverlapResult.h" 헤더 필요
+    TArray<FOverlapResult> results;
+    FCollisionQueryParams params;
+    params.AddIgnoredActor(GetOwner());
+
+    bool bHit = GetWorld()->OverlapMultiByObjectType(
+        results,
+        location,
+        FQuat::Identity,
+        FCollisionObjectQueryParams(ECollisionChannel::ECC_Pawn),
+        FCollisionShape::MakeSphere(radius),
+        params
+    );
+
+    CheckFalse(bHit);
+
+    // HP가 0인 생존자 탐색
+    for (auto& result : results)
+    {
+        ACharacter* candidate = Cast<ACharacter>(result.GetActor());
+        if (!candidate or candidate == GetOwner())
+            continue;
+
+        // TODO: 체력 확인
+
+        Candidate = candidate;
+        break;
+    }
+
+}
+
+void UCWeaponComponent::OnTeleport(const FInputActionValue& InVal)
+{
+    //(X=-1861.969297,Y=-26.204426,Z=237.500124)
+    //GetOwner()->SetActorLocation();
+
+    FTransform transform;
+    transform.SetLocation(FVector(-1662, -26, GetOwner()->GetActorLocation().Z));
+    transform.SetRotation(FQuat(GetOwner()->GetActorRotation()));
+    transform.SetScale3D(GetOwner()->GetActorScale3D());
+
+    GetOwner()->SetActorTransform(transform);
 
 }
 

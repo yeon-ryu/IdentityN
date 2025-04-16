@@ -41,14 +41,8 @@ void USInteractionItem::SetupInputBinding(class UEnhancedInputComponent* input)
 
 void USInteractionItem::Decode(const struct FInputActionValue& value)
 {
-    // 다른 행동 중이면 해당 행동을 중지하기 전까지는 새로운 액션 불가
     if (me->State == ESurvivorState::OPEN || me->State == ESurvivorState::DECODE || me->State == ESurvivorState::DECODE_FAIL || me->bCrawl || me->AnimInstance->falling) return;
 
-    // 1 순위 : 구출 가능한 (의자에 앉아있는) 생존자 (플레이어의 앞쪽에 있어야 함)
-    
-    // 2 순위 : 치료 가능한 (멈춰있는 다친) 생존자 (플레이어의 앞쪽에 있어야 함)
-
-    // 3 순위 : 암호기나 문 해독 (방향은 중요하지 않음)
     if (bNearDoor) {
         if (NearDoor == nullptr) {
             OutDoorArea();

@@ -71,14 +71,14 @@ void USMove::SetupInputBinding(class UEnhancedInputComponent* input)
 
 void USMove::Move(const struct FInputActionValue& Value)
 {
-    if (me->Controller == nullptr || me->IsOutofGame()) return;
+    FVector2D MovementVector = Value.Get<FVector2D>();
 
-    if(me->State == ESurvivorState::DECODE || me->State == ESurvivorState::OPEN || me->State == ESurvivorState::HEAL || me->State == ESurvivorState::RESCUE) {
+    if (me->Controller == nullptr) return;
+
+    if(me->State == ESurvivorState::DECODE || me->State == ESurvivorState::OPEN || me->State == ESurvivorState::HEAL || me->IsOutofGame()) {
         me->State = ESurvivorState::IDLE;
         me->AnimInstance->State = ESurvivorState::IDLE;
     }
-
-    FVector2D MovementVector = Value.Get<FVector2D>();
 
     FVector dir = me->GetFollowCamera()->GetForwardVector() * MovementVector.X + me->GetFollowCamera()->GetRightVector() * MovementVector.Y;
 
@@ -89,9 +89,7 @@ void USMove::CrouchToggle(const struct FInputActionValue& Value)
 {
     if(me->bCrawl) return;
 
-    if (me->Controller == nullptr || me->IsOutofGame()) return;
-
-    if (me->State == ESurvivorState::DECODE || me->State == ESurvivorState::OPEN || me->State == ESurvivorState::HEAL || me->State == ESurvivorState::RESCUE) {
+    if (me->State == ESurvivorState::DECODE || me->State == ESurvivorState::HEAL || me->IsOutofGame()) {
         me->State = ESurvivorState::IDLE;
         me->AnimInstance->State = ESurvivorState::IDLE;
     }

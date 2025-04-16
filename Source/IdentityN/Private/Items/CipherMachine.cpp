@@ -150,11 +150,6 @@ void ACipherMachine::CipherComplete()
     }
 }
 
-float ACipherMachine::GetProgressRate()
-{
-    return DecodeGauge;
-}
-
 void ACipherMachine::OnMachineOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
     auto survivor = Cast<ASurvivor>(OtherActor);
