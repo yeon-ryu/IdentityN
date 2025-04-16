@@ -168,6 +168,11 @@ FVector ADoor::GetPannelLocation()
     return PannelComp->GetComponentLocation();
 }
 
+float ADoor::GetProgressRate()
+{
+    return OpenGauge;
+}
+
 void ADoor::OnPannelOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
     auto sur = Cast<ASurvivor>(OtherActor);
@@ -192,8 +197,12 @@ void ADoor::OnEscapeOverlap(UPrimitiveComponent* OverlappedComponent, AActor* Ot
     auto sur = Cast<ASurvivor>(OtherActor);
     if (sur == nullptr) return;
 
+    if(sur->State == ESurvivorState::SUCCESS) return;
+
     auto gm = Cast<AIdentityNGameMode>(GetWorld()->GetAuthGameMode());
     gm->Escape(sur);
+
+    sur->State = ESurvivorState::SUCCESS;
 }
 
 void ADoor::OpenInterpReturn(float value)
