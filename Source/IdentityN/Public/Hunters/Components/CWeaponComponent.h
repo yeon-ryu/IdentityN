@@ -12,6 +12,20 @@ enum class EWeaponType : uint8
 };
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FWeaponTypeChanged, EWeaponType, InPrevType, EWeaponType, InNewType);
 
+USTRUCT(BlueprintType)
+struct FHunterInfo
+{
+    GENERATED_BODY()
+
+public:
+    UPROPERTY(VisibleAnywhere)
+    float BasicSpeed;
+
+    UPROPERTY(VisibleAnywhere)
+    float FearRadius;
+
+};
+
 UCLASS( ClassGroup=(Custom) )
 class IDENTITYN_API UCWeaponComponent
     : public UCBaseComponent
