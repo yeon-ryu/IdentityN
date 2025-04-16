@@ -71,7 +71,7 @@ public:
 
     // 의자 게이지 : 0 보다 크고 50미만일 때 의자에 다시 앉으면 시작을 50으로 세팅, 50이상일 때 다시 앉으면 바로 100 으로
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Survivor)
-    float SitGauge = 0.0f;
+    float SeatGauge = 0.0f;
 
     // 쓰러짐 상태일때 사망까지 게이지
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Survivor)

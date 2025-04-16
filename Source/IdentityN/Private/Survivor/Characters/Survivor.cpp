@@ -241,6 +241,9 @@ void ASurvivor::ProcessDeadGuage()
 {
     if(IsOutofGame()) return;
 
+    if (State == ESurvivorState::BALLOONED || State == ESurvivorState::SEAT) {
+        return;
+    }
 
     CrawlCurrentTime += GetWorld()->GetDeltaSeconds();
 
