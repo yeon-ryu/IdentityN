@@ -32,7 +32,7 @@ private:
 
     class ACHunter* NearHunter;
 
-    class ACHunter* catchHunter;
+    class ACHunter* CatchHunter;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
     float BalloonGauge = 0.0f;

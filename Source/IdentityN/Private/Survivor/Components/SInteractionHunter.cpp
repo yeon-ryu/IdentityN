@@ -28,6 +28,14 @@ void USInteractionHunter::TickComponent(float DeltaTime, ELevelTick TickType, FA
     if (bNearHunter) {
         CheckDistanceHunter();
     }
+
+    if(CatchHunter != nullptr) {
+        // 풍선 게이지 시간에 따라 생존자 데이터에 따라 찬다.
+
+        if (BalloonGauge > 1.0f) {
+            EscapeBallooned();
+        }
+    }
 }
 
 void USInteractionHunter::CheckDistanceHunter()
@@ -55,7 +63,7 @@ void USInteractionHunter::CheckDistanceHunter()
 
 void USInteractionHunter::CatchBallooned(ACHunter* hunter)
 {
-    catchHunter = hunter;
+    CatchHunter = hunter;
 
     me->State = ESurvivorState::BALLOONED;
     me->AnimInstance->State = ESurvivorState::BALLOONED;
@@ -65,7 +73,7 @@ void USInteractionHunter::CatchBallooned(ACHunter* hunter)
 
 void USInteractionHunter::ReleaseBallooned()
 {
-    catchHunter = nullptr;
+    CatchHunter = nullptr;
 
     me->State = ESurvivorState::IDLE;
     me->AnimInstance->State = ESurvivorState::IDLE;
@@ -73,12 +81,14 @@ void USInteractionHunter::ReleaseBallooned()
 
 void USInteractionHunter::EscapeBallooned()
 {
-    catchHunter = nullptr;
+    CatchHunter = nullptr;
 
     me->State = ESurvivorState::IDLE;
     me->AnimInstance->State = ESurvivorState::IDLE;
     me->bCrawl = false;
     me->SetHP(1.0f);
+
+    BalloonGauge = 0.0f;
 
     // 헌터에도 알려줘야할듯
 }
@@ -86,10 +96,6 @@ void USInteractionHunter::EscapeBallooned()
 void USInteractionHunter::TryEscapeBallooned(float strength)
 {
     BalloonGauge += strength;
-    if (BalloonGauge > 1.0f) {
-        EscapeBallooned();
-        BalloonGauge = 0.0f;
-    }
 }
 
 void USInteractionHunter::OnSenseOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
