@@ -20,6 +20,7 @@
 #include "IdentityNGameInstance.h"
 #include "IdentityNGameMode.h"
 #include "Survivor/Components/SInteractionHunter.h"
+#include "Survivor/SurvivorController.h"
 
 // Sets default values
 ASurvivor::ASurvivor()
@@ -69,7 +70,7 @@ void ASurvivor::BeginPlay()
 {
 	Super::BeginPlay();
 	
-    auto pc = Cast<APlayerController>(Controller);
+    auto pc = Cast<ASurvivorController>(Controller);
     
     if (pc) {
         auto CameraManager = pc->PlayerCameraManager;
@@ -118,7 +119,7 @@ void ASurvivor::NotifyControllerChanged()
     Super::NotifyControllerChanged();
 
     // Add Input Mapping Context
-    if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
+    if (ASurvivorController* PlayerController = Cast<ASurvivorController>(Controller))
     {
         if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
         {

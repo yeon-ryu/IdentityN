@@ -8,6 +8,7 @@
 #include "Utilities/CLog.h"
 #include "Items/CipherMachine.h"
 #include "Survivor/Characters/Survivor.h"
+#include "Survivor/SurvivorController.h"
 
 AIdentityNGameMode::AIdentityNGameMode()
 {
@@ -70,6 +71,10 @@ void AIdentityNGameMode::Escape(class ASurvivor* sur)
 {
     escapeCount++;
     escapeList.Add(sur);
+
+    // 해당 캐릭터를 관전자 모드로 변경
+    auto pc = Cast<ASurvivorController>(sur->GetController());
+    pc->ServerRPC_ChangeToSpectator();
     
     CLog::Print(FString::Printf(TEXT("%d Survivor Escape!"), escapeCount), -1, 5, FColor::Red);
 
@@ -83,8 +88,9 @@ void AIdentityNGameMode::Eliminate(class ASurvivor* sur)
     eliminateCount++;
     eliminateList.Add(sur);
 
-    // 해당 캐릭터를 관전자 모드로 변경 필요
-    sur->Destroy();
+    // 해당 캐릭터를 관전자 모드로 변경
+    auto pc = Cast<ASurvivorController>(sur->GetController());
+    pc->ServerRPC_ChangeToSpectator();
 
     CLog::Print(FString::Printf(TEXT("%d Survivor Eliminate!"), eliminateCount), -1, 5, FColor::Red);
 
