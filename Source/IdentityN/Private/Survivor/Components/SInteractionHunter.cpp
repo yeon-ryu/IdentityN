@@ -4,6 +4,7 @@
 #include "Utilities/CLog.h"
 #include "Components/CapsuleComponent.h"
 #include "Survivor/Animations/SAnimInstance.h"
+#include "Kismet/KismetMathLibrary.h"
 
 USInteractionHunter::USInteractionHunter()
 {
@@ -30,7 +31,10 @@ void USInteractionHunter::TickComponent(float DeltaTime, ELevelTick TickType, FA
     }
 
     if(CatchHunter != nullptr) {
-        // 풍선 게이지 시간에 따라 생존자 데이터에 따라 찬다.
+        // 풍선 게이지 시간에 따라 생존자 데이터에 따라 차도록 로직 추가
+
+        FRotator hRot = CatchHunter->GetActorRotation();
+        me->SetActorRotation(FRotator(0.0f, UKismetMathLibrary::ClampAxis(hRot.Yaw), 0.0f));
 
         if (BalloonGauge > 1.0f) {
             EscapeBallooned();
@@ -73,7 +77,9 @@ void USInteractionHunter::CatchBallooned(ACHunter* hunter)
 
 void USInteractionHunter::ReleaseBallooned()
 {
-    CatchHunter = nullptr;
+    if(CatchHunter) {
+        CatchHunter = nullptr;
+    }
 
     me->State = ESurvivorState::IDLE;
     me->AnimInstance->State = ESurvivorState::IDLE;
@@ -81,7 +87,10 @@ void USInteractionHunter::ReleaseBallooned()
 
 void USInteractionHunter::EscapeBallooned()
 {
-    CatchHunter = nullptr;
+    if(CatchHunter) {
+        CatchHunter->EscapeSurvivor();
+        CatchHunter = nullptr;
+    }
 
     me->State = ESurvivorState::IDLE;
     me->AnimInstance->State = ESurvivorState::IDLE;
@@ -89,8 +98,6 @@ void USInteractionHunter::EscapeBallooned()
     me->SetHP(1.0f);
 
     BalloonGauge = 0.0f;
-
-    // 헌터에도 알려줘야할듯
 }
 
 void USInteractionHunter::TryEscapeBallooned(float strength)
