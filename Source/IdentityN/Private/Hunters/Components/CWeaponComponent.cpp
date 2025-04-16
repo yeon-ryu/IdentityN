@@ -275,11 +275,11 @@ void UCWeaponComponent::OnCapture(const FInputActionValue& InVal)
 
 void UCWeaponComponent::OnTeleport(const FInputActionValue& InVal)
 {
-    //(X=-1861.969297,Y=-26.204426,Z=237.500124)
+    //(X=1883.000000,Y=-819.000000,Z=155.000000)
     //GetOwner()->SetActorLocation();
 
     FTransform transform;
-    transform.SetLocation(FVector(-1662, -26, GetOwner()->GetActorLocation().Z));
+    transform.SetLocation(FVector(1700, -819, GetOwner()->GetActorLocation().Z));
     transform.SetRotation(FQuat(GetOwner()->GetActorRotation()));
     transform.SetScale3D(GetOwner()->GetActorScale3D());
 
