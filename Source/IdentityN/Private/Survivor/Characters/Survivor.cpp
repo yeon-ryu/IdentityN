@@ -20,6 +20,8 @@
 #include "IdentityNGameInstance.h"
 #include "IdentityNGameMode.h"
 #include "Survivor/Components/SInteractionHunter.h"
+#include "Components/SphereComponent.h"
+#include "Survivor/Components/SInteractionSurvivor.h"
 
 // Sets default values
 ASurvivor::ASurvivor()
@@ -47,11 +49,19 @@ ASurvivor::ASurvivor()
     FollowCamera->SetRelativeLocation(FVector(0, 0, 40));
     FollowCamera->bUsePawnControlRotation = false;
 
+    HealCollision = CreateDefaultSubobject<USphereComponent>(TEXT("HealCollision"));
+    HealCollision->SetupAttachment(RootComponent);
+    HealCollision->SetSphereRadius(100.0f);
+    HealCollision->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+    HealCollision->SetCollisionResponseToAllChannels(ECR_Ignore);
+    HealCollision->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
+
     MoveComp = CreateDefaultSubobject<USMove>(TEXT("MoveComp"));
     BuffComp = CreateDefaultSubobject<USBuff>(TEXT("BuffComp"));
     InteractionItemComp = CreateDefaultSubobject<USInteractionItem>(TEXT("InteractionItemComp"));
     InteractionHunterComp = CreateDefaultSubobject<USInteractionHunter>(TEXT("InteractionHunterComp"));
-
+    InteractionSurvivorComp = CreateDefaultSubobject<USInteractionSurvivor>(TEXT("InteractionSurvivorComp"));
+    
 
     ConstructorHelpers::FObjectFinder<UInputMappingContext> TempIMC(TEXT("/Script/EnhancedInput.InputMappingContext'/Game/RGY/Inputs/IMC_Survivor.IMC_Survivor'"));
     if (TempIMC.Succeeded()) {
@@ -107,6 +117,7 @@ void ASurvivor::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
     if (UEnhancedInputComponent* input = Cast<UEnhancedInputComponent>(PlayerInputComponent)) {
         MoveComp->SetupInputBinding(input);
         InteractionItemComp->SetupInputBinding(input);
+        InteractionSurvivorComp->SetupInputBinding(input);
 
         // Looking
         input->BindAction(IA_Look, ETriggerEvent::Triggered, this, &ASurvivor::Look);
@@ -193,9 +204,12 @@ bool ASurvivor::IsOutofGame()
     return false;
 }
 
-void ASurvivor::SetHP(float hp)
+void ASurvivor::AddHP(float hp)
 {
-    HP = hp;
+    HP += hp;
+    if(HP > MaxHP) HP = MaxHP;
+
+    CLog::Print(HP);
 }
 
 void ASurvivor::CatchBallooned(ACHunter* catchHunter)
@@ -263,6 +277,7 @@ void ASurvivor::SetInitData()
     BuffComp->SetInitData();
     InteractionItemComp->SetInitData();
     InteractionHunterComp->SetInitData();
+    InteractionSurvivorComp->SetInitData();
 }
 
 void ASurvivor::ProcessDeadGuage()
@@ -282,6 +297,10 @@ void ASurvivor::ProcessDeadGuage()
 
     // 사망 : 탈락 UI 표시 필요
     if (CrawlCurrentTime >= CrawlDeadTime) {
+        if (State == ESurvivorState::HEAL_RECEIVE) {
+            InteractionSurvivorComp->RemoveHealer();
+        }
+
         State = ESurvivorState::FAIL;
         CLog::Print("Die");
 

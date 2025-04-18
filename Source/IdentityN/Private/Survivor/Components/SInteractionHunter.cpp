@@ -96,7 +96,7 @@ void USInteractionHunter::EscapeBallooned()
     me->State = ESurvivorState::IDLE;
     me->AnimInstance->State = ESurvivorState::IDLE;
     me->bCrawl = false;
-    me->SetHP(1.0f);
+    me->AddHP(1.0f);
 
     BalloonGauge = 0.0f;
 }

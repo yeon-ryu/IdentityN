@@ -75,7 +75,6 @@ void AIdentityNGameMode::Escape(class ASurvivor* sur)
     // 해당 캐릭터를 관전자 모드로 변경
     auto pc = Cast<AIdentityNPlayerController>(sur->GetController());
     //pc->ServerRPC_ChangeToSpectator_Implementation();
-    sur->Destroy(); // <- 위의 관전자 모드 되면 중복 되므로 제거
     
     CLog::Print(FString::Printf(TEXT("%d Survivor Escape!"), escapeCount), -1, 5, FColor::Red);
 

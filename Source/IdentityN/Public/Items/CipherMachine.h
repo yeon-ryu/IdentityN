@@ -6,7 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "CipherMachine.generated.h"
 
-// 대기 중은 안테나 빛남, 해독중은 안테나 흔들림, 해독완료는 안테나 빛 사라짐
+// 대기 중은 안테나 반짝반짝 빛남(시간별 마테리얼), 해독중은 안테나 흔들림, 해독완료는 안테나 빛 사라짐
 UENUM(BlueprintType)
 enum class EChiperState : uint8 {
     READY UMETA(DisplayName = "대기"),

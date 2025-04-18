@@ -57,7 +57,7 @@ private:
 
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-    class UInputAction* IA_Decode;
+    class UInputAction* IA_InterAction;
 
 public:
     void Decode(const struct FInputActionValue& value);
