@@ -8,7 +8,7 @@
 #include "Utilities/CLog.h"
 #include "Items/CipherMachine.h"
 #include "Survivor/Characters/Survivor.h"
-#include "Survivor/SurvivorController.h"
+#include "IdentityNPlayerController.h"
 
 AIdentityNGameMode::AIdentityNGameMode()
 {
@@ -73,8 +73,9 @@ void AIdentityNGameMode::Escape(class ASurvivor* sur)
     escapeList.Add(sur);
 
     // 해당 캐릭터를 관전자 모드로 변경
-    auto pc = Cast<ASurvivorController>(sur->GetController());
-    pc->ServerRPC_ChangeToSpectator();
+    auto pc = Cast<AIdentityNPlayerController>(sur->GetController());
+    //pc->ServerRPC_ChangeToSpectator_Implementation();
+    sur->Destroy(); // <- 위의 관전자 모드 되면 중복 되므로 제거
     
     CLog::Print(FString::Printf(TEXT("%d Survivor Escape!"), escapeCount), -1, 5, FColor::Red);
 
@@ -89,8 +90,9 @@ void AIdentityNGameMode::Eliminate(class ASurvivor* sur)
     eliminateList.Add(sur);
 
     // 해당 캐릭터를 관전자 모드로 변경
-    auto pc = Cast<ASurvivorController>(sur->GetController());
-    pc->ServerRPC_ChangeToSpectator();
+    auto pc = Cast<AIdentityNPlayerController>(sur->GetController());
+    //pc->ServerRPC_ChangeToSpectator_Implementation();
+    sur->Destroy(); // <- 위의 관전자 모드 되면 중복 되므로 제거
 
     CLog::Print(FString::Printf(TEXT("%d Survivor Eliminate!"), eliminateCount), -1, 5, FColor::Red);
 

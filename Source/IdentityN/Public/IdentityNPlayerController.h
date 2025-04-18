@@ -4,13 +4,14 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
-#include "SurvivorController.generated.h"
+#include "Survivor/Data/SurvivorEnum.h"
+#include "IdentityNPlayerController.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class IDENTITYN_API ASurvivorController : public APlayerController
+class IDENTITYN_API AIdentityNPlayerController : public APlayerController
 {
 	GENERATED_BODY()
 	
@@ -19,6 +20,9 @@ public:
 
     UFUNCTION(Server, Reliable)
     void ServerRPC_ChangeToSpectator();
+
+    UFUNCTION(Server, Reliable)
+    void ServerRPC_ChangePlayerPawn(bool isSurvivor, ESurvivorPawn survivor);
 
 private:
     UPROPERTY()

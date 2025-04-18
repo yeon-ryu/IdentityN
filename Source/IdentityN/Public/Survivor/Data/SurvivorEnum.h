@@ -31,6 +31,11 @@ enum class ESurvivorPersonaTrigger : uint8 {
     Damaged UMETA(DisplayName = "피격 시")
 };
 
+UENUM(BlueprintType)
+enum class ESurvivorPawn : uint8 {
+    Embalmer UMETA(DisplayName = "납관사")
+};
+
 /**
  * 
  */
