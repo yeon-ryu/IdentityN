@@ -11,6 +11,12 @@ struct FHunterCharacteristics : public FTableRowBase
 
 public:
     UPROPERTY(VisibleAnywhere)
+    FString SkeletalMesh;
+
+    UPROPERTY(VisibleAnywhere)
+    FString AnimInstanceClass;
+
+    UPROPERTY(VisibleAnywhere)
     float BasicSpeed;
 
     UPROPERTY(VisibleAnywhere)
@@ -36,9 +42,6 @@ private:
     UPROPERTY(VisibleAnywhere, Category = "Character")
     class USphereComponent* Fear;
 
-    UPROPERTY(VisibleAnywhere, Category = "Character")
-    class USplineComponent* Spline;
-
 private:
     UPROPERTY(VisibleAnywhere, Category = "Components")
     class UCStateComponent* State;
@@ -59,6 +62,8 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
+    virtual void PostInitializeComponents() override;
+
 public:	
 	virtual void Tick(float DeltaTime) override;
 
@@ -67,21 +72,21 @@ public:
 public:
     void EscapeSurvivor();
 
+protected:
+    void LoadHunterDataFromTable();
+
 private:
     void InitializeCharacters();
 
-    UFUNCTION()
-    void OnComponentBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-
-    UFUNCTION()
-    void OnComponentEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
-
-public:
-    UPROPERTY(EditDefaultsOnly, Category = "DataTable")
-    class UDataTable* Characteristic;
+protected:
+    FHunterCharacteristics* Characteristics;
 
 private:
-    UPROPERTY()
-    class ACharacter* Target;
+    UPROPERTY(EditDefaultsOnly, Category = "DataTable")
+    class UDataTable* CharacteristicsTable;
+
+protected:
+    UPROPERTY(VisibleAnywhere, Category = "Characteristic")
+    FName HunterName;
 
 };

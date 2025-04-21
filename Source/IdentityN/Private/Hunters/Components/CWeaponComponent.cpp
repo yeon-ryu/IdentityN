@@ -16,6 +16,7 @@
 #include "Hunters/Characters/CHunter.h"
 #include "EnhancedInputComponent.h"
 #include "InputActionValue.h"
+#include "Net/UnrealNetwork.h"
 
 UCWeaponComponent::UCWeaponComponent()
 {
@@ -32,14 +33,13 @@ UCWeaponComponent::UCWeaponComponent()
 
 void UCWeaponComponent::BeginPlay()
 {	
-    OwnerCharacter = Cast<ACharacter>(GetOwner());
+    Super::BeginPlay();
+
     for (int32 i = 0; i < (int32)EWeaponType::MAX; i++)
     {
         if (!!DataAssets[i])
             DataAssets[i]->BeginPlay(OwnerCharacter, &Datas[i]);
     }
-
-    Super::BeginPlay();
 
     SetHarpoonMode();
 
@@ -56,9 +56,7 @@ void UCWeaponComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
         GetChargeAction()->Tick(DeltaTime);
 
     if (Candidate)
-    {
         Candidate->SetActorLocation(GetOwner()->GetActorLocation() + GetOwner()->GetActorUpVector() * 200);
-    }
 
 }
 
@@ -144,12 +142,52 @@ void UCWeaponComponent::SetHarpoonMode()
 
 void UCWeaponComponent::DoAction(const struct FInputActionValue& InVal)
 {
+    if (GetOwnerRole() < ROLE_Authority)
+    {
+        ServerRPC_DoAction();
+
+        return;
+    }
+
+    if (!!GetDoAction())
+        GetDoAction()->DoAction();
+
+}
+
+void UCWeaponComponent::ServerRPC_DoAction_Implementation()
+{
+    MulticastRPC_DoAction();
+
+}
+
+void UCWeaponComponent::MulticastRPC_DoAction_Implementation()
+{
     if (!!GetDoAction())
         GetDoAction()->DoAction();
 
 }
 
 void UCWeaponComponent::ChargeAction_Pressed()
+{
+    if (GetOwnerRole() < ROLE_Authority)
+    {
+        ServerRPC_ChargeAction_Pressed();
+
+        return;
+    }
+
+    if (!!GetChargeAction())
+        GetChargeAction()->Pressed();
+
+}
+
+void UCWeaponComponent::ServerRPC_ChargeAction_Pressed_Implementation()
+{
+    MulticastRPC_ChargeAction_Pressed();
+
+}
+
+void UCWeaponComponent::MulticastRPC_ChargeAction_Pressed_Implementation()
 {
     if (!!GetChargeAction())
         GetChargeAction()->Pressed();
@@ -158,43 +196,64 @@ void UCWeaponComponent::ChargeAction_Pressed()
 
 void UCWeaponComponent::ChargeAction_Released()
 {
+    if (GetOwnerRole() < ROLE_Authority)
+    {
+        ServerRPC_ChargeAction_Released();
+
+        return;
+    }
+
     if (!!GetChargeAction())
         GetChargeAction()->Released();
 
 }
 
-void UCWeaponComponent::OnChargeAction(const FInputActionValue& InVal)
+void UCWeaponComponent::ServerRPC_ChargeAction_Released_Implementation()
 {
-    ChargeAction_Pressed();
+    MulticastRPC_ChargeAction_Released();
 
 }
 
-void UCWeaponComponent::OffChargeAction(const FInputActionValue& InVal)
+void UCWeaponComponent::MulticastRPC_ChargeAction_Released_Implementation()
 {
-    ChargeAction_Released();
-
-}
-
-void UCWeaponComponent::OnSelectAction(const FInputActionValue& InVal)
-{
-    ChargeTime += GetWorld()->GetDeltaSeconds();
-
-}
-
-void UCWeaponComponent::OnInitAction(const FInputActionValue& InVal)
-{
-    if (ChargeTime >= 1)
-    {
-        ChargeTime = 0;
-
-        OnChargeAction(FInputActionValue());
-        OffChargeAction(FInputActionValue());
-    }
-    else DoAction(FInputActionValue());
+    if (!!GetChargeAction())
+        GetChargeAction()->Released();
 
 }
 
 void UCWeaponComponent::OnChargingSkill(const FInputActionValue& InVal)
+{
+    if (GetOwnerRole() < ROLE_Authority)
+    {
+        ServerRPC_OnChargingSkill();
+
+        return;
+    }
+
+    if (bCanSkill)
+    {
+        if (!!GetSkill())
+            GetSkill()->Pressed();
+
+        bCanSkill = false;
+
+        bUsedSkill = true;
+    }
+    else
+    {
+        if (ACObject_SpearFishing* object = CHelpers::FindActor<ACObject_SpearFishing>(GetWorld()))
+            object->Return(GetOwner()->GetActorLocation());
+    }
+
+}
+
+void UCWeaponComponent::ServerRPC_OnChargingSkill_Implementation()
+{
+    MulticastRPC_OnChargingSkill();
+
+}
+
+void UCWeaponComponent::MulticastRPC_OnChargingSkill_Implementation()
 {
     if (bCanSkill)
     {
@@ -215,6 +274,13 @@ void UCWeaponComponent::OnChargingSkill(const FInputActionValue& InVal)
 
 void UCWeaponComponent::OnShootSkill(const FInputActionValue& InVal)
 {
+    if (GetOwnerRole() < ROLE_Authority)
+    {
+        ServerRPC_OnShootSkill();
+
+        return;
+    }
+
     if (!bCanSkill)
     {
         if (!!GetSkill())
@@ -225,7 +291,136 @@ void UCWeaponComponent::OnShootSkill(const FInputActionValue& InVal)
 
 }
 
+void UCWeaponComponent::ServerRPC_OnShootSkill_Implementation()
+{
+    MulticastRPC_OnShootSkill();
+
+}
+
+void UCWeaponComponent::MulticastRPC_OnShootSkill_Implementation()
+{
+    if (!bCanSkill)
+    {
+        if (!!GetSkill())
+            GetSkill()->Released();
+
+        //GetAttachment()->SetActorHiddenInGame(bUsedSkill);
+    }
+
+}
+
+void UCWeaponComponent::OnTeleport(const FInputActionValue& InVal)
+{
+    if (GetOwnerRole() < ROLE_Authority)
+    {
+        ServerRPC_OnTeleport();
+
+        return;
+    }
+
+    //(X=1883.000000,Y=-819.000000,Z=155.000000)
+    //GetOwner()->SetActorLocation();
+
+    FTransform transform;
+    transform.SetLocation(FVector(1700, -819, GetOwner()->GetActorLocation().Z));
+    transform.SetRotation(FQuat(GetOwner()->GetActorRotation()));
+    transform.SetScale3D(GetOwner()->GetActorScale3D());
+
+    GetOwner()->SetActorTransform(transform);
+
+}
+
+void UCWeaponComponent::ServerRPC_OnTeleport_Implementation()
+{
+    MulticastRPC_OnTeleport();
+
+}
+
+void UCWeaponComponent::MulticastRPC_OnTeleport_Implementation()
+{
+    //(X=1883.000000,Y=-819.000000,Z=155.000000)
+    //GetOwner()->SetActorLocation();
+
+    FTransform transform;
+    transform.SetLocation(FVector(1700, -819, GetOwner()->GetActorLocation().Z));
+    transform.SetRotation(FQuat(GetOwner()->GetActorRotation()));
+    transform.SetScale3D(GetOwner()->GetActorScale3D());
+
+    GetOwner()->SetActorTransform(transform);
+
+}
+
 void UCWeaponComponent::OnCapture(const FInputActionValue& InVal)
+{
+    if (GetOwnerRole() < ROLE_Authority)
+    {
+        ServerRPC_OnCapture();
+
+        return;
+    }
+
+    if (Candidate)
+    {
+        Candidate->SetActorLocation(GetOwner()->GetActorLocation() + GetOwner()->GetActorForwardVector() * 150);
+        ASurvivor* survivor = Cast<ASurvivor>(Candidate);
+        survivor->ReleaseBallooned();
+        Candidate = nullptr;
+
+        return;
+    }
+
+    constexpr float radius = 50.0f;
+
+    // 감시자 위치
+    FVector location = GetOwner()->GetActorLocation();
+
+    // 캡처 대상
+    ACharacter* target = nullptr;
+
+    // 구체 범위 내 오버랩된 액터 수집
+    // #include "Engine/OverlapResult.h" 헤더 필요
+    TArray<FOverlapResult> results;
+    FCollisionQueryParams params;
+    params.AddIgnoredActor(GetOwner());
+
+    bool bHit = GetWorld()->OverlapMultiByObjectType(
+        results,
+        location,
+        FQuat::Identity,
+        FCollisionObjectQueryParams(ECollisionChannel::ECC_Pawn),
+        FCollisionShape::MakeSphere(radius),
+        params
+    );
+
+    CheckFalse(bHit);
+
+    // HP가 0인 생존자 탐색
+    for (auto& result : results)
+    {
+        ASurvivor* candidate = Cast<ASurvivor>(result.GetActor());
+        if (!candidate or candidate == GetOwner())
+            continue;
+
+        // TODO: 체력 확인
+        if (candidate->bCrawl)
+        {
+            Candidate = candidate;
+
+            candidate->CatchBallooned(Cast<ACHunter>(GetOwner()));
+
+            break;
+        }
+    }
+
+}
+
+void UCWeaponComponent::ServerRPC_OnCapture_Implementation()
+{
+    MulticastRPC_OnCapture();
+
+}
+
+void UCWeaponComponent::MulticastRPC_OnCapture_Implementation()
 {
     if (Candidate)
     {
@@ -282,17 +477,34 @@ void UCWeaponComponent::OnCapture(const FInputActionValue& InVal)
 
 }
 
-void UCWeaponComponent::OnTeleport(const FInputActionValue& InVal)
+void UCWeaponComponent::OnChargeAction(const FInputActionValue& InVal)
 {
-    //(X=1883.000000,Y=-819.000000,Z=155.000000)
-    //GetOwner()->SetActorLocation();
+    ChargeAction_Pressed();
 
-    FTransform transform;
-    transform.SetLocation(FVector(1700, -819, GetOwner()->GetActorLocation().Z));
-    transform.SetRotation(FQuat(GetOwner()->GetActorRotation()));
-    transform.SetScale3D(GetOwner()->GetActorScale3D());
+}
 
-    GetOwner()->SetActorTransform(transform);
+void UCWeaponComponent::OffChargeAction(const FInputActionValue& InVal)
+{
+    ChargeAction_Released();
+
+}
+
+void UCWeaponComponent::OnSelectAction(const FInputActionValue& InVal)
+{
+    ChargeTime += GetWorld()->GetDeltaSeconds();
+
+}
+
+void UCWeaponComponent::OnInitAction(const FInputActionValue& InVal)
+{
+    if (ChargeTime >= 1)
+    {
+        ChargeTime = 0;
+
+        OnChargeAction(FInputActionValue());
+        OffChargeAction(FInputActionValue());
+    }
+    else DoAction(FInputActionValue());
 
 }
 
@@ -325,5 +537,15 @@ void UCWeaponComponent::ChangeType(EWeaponType InType)
 
     if (OnWeaponTypeChange.IsBound())
         OnWeaponTypeChange.Broadcast(prevType, InType);
+
+}
+
+void UCWeaponComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+    Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+    DOREPLIFETIME(UCWeaponComponent, bCanSkill);
+
+    DOREPLIFETIME(UCWeaponComponent, bUsedSkill);
 
 }

@@ -1,5 +1,6 @@
 ﻿#include "Hunters/Components/CBaseComponent.h"
 #include "Global.h"
+#include "Hunters/Characters/CHunter.h"
 
 UCBaseComponent::UCBaseComponent()
 {
@@ -11,7 +12,7 @@ void UCBaseComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-    OwnerCharacter = Cast<ACharacter>(GetOwner());
+    OwnerCharacter = Cast<ACHunter>(GetOwner());
 
 }
 
