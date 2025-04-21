@@ -45,6 +45,12 @@ public:
 
     UPROPERTY( EditAnywhere )
 	class USInteractionHunter* InteractionHunterComp;
+
+    UPROPERTY( EditAnywhere )
+	class USInteractionSurvivor* InteractionSurvivorComp;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Collision)
+	class USphereComponent* HealCollision;
     
 private:
 	/** Camera boom positioning the camera behind the character */
@@ -76,10 +82,6 @@ public:
     // 쓰러짐 상태일때 사망까지 게이지
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Gauge)
     float DeadGauge = 0.0f;
-
-    // 치료 게이지
-    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Gauge)
-    float HealGauge = 0.0f;
 
     // 쓰러짐 상태 여부
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Survivor)
@@ -131,7 +133,9 @@ public:
 
     bool IsOutofGame();
 
-    void SetHP(float hp);
+    FORCEINLINE float GetHP() const { return HP; }
+
+    void AddHP(float hp);
 
     void CatchBallooned(class ACHunter* catchHunter);
 

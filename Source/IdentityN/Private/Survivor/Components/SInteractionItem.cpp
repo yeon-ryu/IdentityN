@@ -10,9 +10,9 @@ USInteractionItem::USInteractionItem()
 {
 	PrimaryComponentTick.bCanEverTick = true;
 
-    ConstructorHelpers::FObjectFinder<UInputAction> TempIADecode(TEXT("/Script/EnhancedInput.InputAction'/Game/RGY/Inputs/IA_Decode.IA_Decode'"));
-    if (TempIADecode.Succeeded()) {
-        IA_Decode = TempIADecode.Object;
+    ConstructorHelpers::FObjectFinder<UInputAction> TempIAInterAction(TEXT("/Script/EnhancedInput.InputAction'/Game/RGY/Inputs/IA_SInterAction.IA_SInterAction'"));
+    if (TempIAInterAction.Succeeded()) {
+        IA_InterAction = TempIAInterAction.Object;
     }
 }
 
@@ -36,7 +36,7 @@ void USInteractionItem::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 
 void USInteractionItem::SetupInputBinding(class UEnhancedInputComponent* input)
 {
-    input->BindAction(IA_Decode, ETriggerEvent::Started, this, &USInteractionItem::Decode);
+    input->BindAction(IA_InterAction, ETriggerEvent::Started, this, &USInteractionItem::Decode);
 }
 
 void USInteractionItem::Decode(const struct FInputActionValue& value)

@@ -32,6 +32,9 @@ public:
 	bool bCrawl = false;
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category= SurvivorAnim)
+    bool bHurt = false;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category= SurvivorAnim)
     bool falling = false;
 
 private:

@@ -23,7 +23,7 @@ USMove::USMove()
         IA_Move = TempIAMove.Object;
     }
 
-    ConstructorHelpers::FObjectFinder<UInputAction> TempIACrouch(TEXT("/Script/EnhancedInput.InputAction'/Game/RGY/Inputs/IA_Crouch.IA_Crouch'"));
+    ConstructorHelpers::FObjectFinder<UInputAction> TempIACrouch(TEXT("/Script/EnhancedInput.InputAction'/Game/RGY/Inputs/IA_SCrouch.IA_SCrouch'"));
     if (TempIACrouch.Succeeded()) {
         IA_Crouch = TempIACrouch.Object;
     }
@@ -80,7 +80,7 @@ void USMove::Move(const struct FInputActionValue& Value)
         return;
     }
 
-    if(me->State == ESurvivorState::DECODE || me->State == ESurvivorState::OPEN || me->State == ESurvivorState::HEAL || me->State == ESurvivorState::RESCUE) {
+    if(me->State == ESurvivorState::DECODE || me->State == ESurvivorState::OPEN || me->State == ESurvivorState::HEAL || me->State == ESurvivorState::HEAL_RECEIVE || me->State == ESurvivorState::RESCUE) {
         me->State = ESurvivorState::IDLE;
         me->AnimInstance->State = ESurvivorState::IDLE;
     }
@@ -98,7 +98,7 @@ void USMove::CrouchToggle(const struct FInputActionValue& Value)
 
     if (me->Controller == nullptr || me->IsOutofGame()) return;
 
-    if (me->State == ESurvivorState::DECODE || me->State == ESurvivorState::OPEN || me->State == ESurvivorState::HEAL || me->State == ESurvivorState::RESCUE) {
+    if (me->State == ESurvivorState::DECODE || me->State == ESurvivorState::OPEN || me->State == ESurvivorState::HEAL || me->State == ESurvivorState::HEAL_RECEIVE || me->State == ESurvivorState::RESCUE) {
         me->State = ESurvivorState::IDLE;
         me->AnimInstance->State = ESurvivorState::IDLE;
     }

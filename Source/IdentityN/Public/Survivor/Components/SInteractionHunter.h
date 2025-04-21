@@ -24,6 +24,9 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Gauge, meta = (AllowPrivateAccess = "true"))
+    float BalloonGauge = 0.0f;
+
 private:
 	UPROPERTY()
 	class ASurvivor* me;
@@ -33,9 +36,6 @@ private:
     class ACHunter* NearHunter;
 
     class ACHunter* CatchHunter;
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Gauge, meta = (AllowPrivateAccess = "true"))
-    float BalloonGauge = 0.0f;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Status, meta = (AllowPrivateAccess = "true"))
     float BalloonedFallTime = 16.0f;
@@ -54,7 +54,7 @@ public:
     void SetInitData();
 
 private:
-UFUNCTION()
+    UFUNCTION()
 	void OnSenseOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
     UFUNCTION()

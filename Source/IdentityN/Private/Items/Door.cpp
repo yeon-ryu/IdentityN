@@ -62,7 +62,7 @@ ADoor::ADoor()
     // 탈출 Collision
     EscapeCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("EscapeComp"));
     EscapeCollision->SetupAttachment(RootComponent);
-    EscapeCollision->SetRelativeLocation(FVector(300, 0, -110));
+    EscapeCollision->SetRelativeLocation(FVector(500, 0, -110));
     EscapeCollision->SetRelativeScale3D(FVector(1.0f, 10.0f, 2.0f));
 
     EscapeCollision->SetCollisionResponseToAllChannels(ECR_Ignore);

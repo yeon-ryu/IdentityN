@@ -11,6 +11,7 @@ enum class ESurvivorState : uint8 {
     //MOVE UMETA(DisplayName = "이동"),
     DAMAGED UMETA(DisplayName = "피격"),
     HEAL UMETA(DisplayName = "치료"),
+    HEAL_RECEIVE UMETA(DisplayName = "치료받음"),
     DECODE UMETA(DisplayName = "해독"),
     DECODE_FAIL UMETA(DisplayName = "해독실패"),
     OPEN UMETA(DisplayName = "문열기"),
@@ -29,6 +30,11 @@ UENUM(BlueprintType)
 enum class ESurvivorPersonaTrigger : uint8 {
     CompleteDecode UMETA(DisplayName = "해독완료"),
     Damaged UMETA(DisplayName = "피격 시")
+};
+
+UENUM(BlueprintType)
+enum class ESurvivorPawn : uint8 {
+    Embalmer UMETA(DisplayName = "납관사")
 };
 
 /**
