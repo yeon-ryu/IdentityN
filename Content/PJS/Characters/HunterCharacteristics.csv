@@ -1,2 +1,2 @@
-,BasicSpeed,SkillSpeed,FearRadius
-Naiad,464,603.2,3207
+Name,SkeletalMesh,AnimInstanceClass,BasicSpeed,SkillSpeed,FearRadius
+Naiad,/Script/Engine.SkeletalMesh'/Game/PJS/Characters/Naiad/Naiad.Naiad',/Script/Engine.AnimBlueprint'/Game/PJS/Characters/ABP_CHunterAnimInstance.ABP_CHunterAnimInstance_C',464,603.2,3207

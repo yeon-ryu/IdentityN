@@ -1,6 +1,6 @@
 ﻿#include "Hunters/Components/CMovementComponent.h"
 #include "Global.h"
-#include "GameFramework/Character.h"
+#include "Hunters/Characters/CHunter.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "EnhancedInputComponent.h"
 #include "InputActionValue.h"

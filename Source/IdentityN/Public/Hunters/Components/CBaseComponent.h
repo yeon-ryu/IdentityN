@@ -21,6 +21,6 @@ public:
 
 protected:
     UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Character")
-    class ACharacter* OwnerCharacter;
+    class ACHunter* OwnerCharacter;
 
 };

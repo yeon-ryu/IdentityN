@@ -76,12 +76,88 @@ public:
 private:
     void DoAction(const struct FInputActionValue& InVal);
 
+protected:
+    UFUNCTION(Server, Reliable)
+    void ServerRPC_DoAction();
+    void ServerRPC_DoAction_Implementation();
+
+    UFUNCTION(NetMulticast, Reliable)
+    void MulticastRPC_DoAction();
+    void MulticastRPC_DoAction_Implementation();
+
 public:
     UFUNCTION(BlueprintCallable)
     void ChargeAction_Pressed();
 
+protected:
+    UFUNCTION(Server, Reliable)
+    void ServerRPC_ChargeAction_Pressed();
+    void ServerRPC_ChargeAction_Pressed_Implementation();
+
+    UFUNCTION(NetMulticast, Reliable)
+    void MulticastRPC_ChargeAction_Pressed();
+    void MulticastRPC_ChargeAction_Pressed_Implementation();
+
+public:
     UFUNCTION(BlueprintCallable)
     void ChargeAction_Released();
+
+protected:
+    UFUNCTION(Server, Reliable)
+    void ServerRPC_ChargeAction_Released();
+    void ServerRPC_ChargeAction_Released_Implementation();
+
+    UFUNCTION(NetMulticast, Reliable)
+    void MulticastRPC_ChargeAction_Released();
+    void MulticastRPC_ChargeAction_Released_Implementation();
+
+private:
+    void OnChargingSkill(const struct FInputActionValue& InVal);
+
+protected:
+    UFUNCTION(Server, Reliable)
+    void ServerRPC_OnChargingSkill();
+    void ServerRPC_OnChargingSkill_Implementation();
+
+    UFUNCTION(NetMulticast, Reliable)
+    void MulticastRPC_OnChargingSkill();
+    void MulticastRPC_OnChargingSkill_Implementation();
+
+private:
+    void OnShootSkill(const struct FInputActionValue& InVal);
+
+protected:
+    UFUNCTION(Server, Reliable)
+    void ServerRPC_OnShootSkill();
+    void ServerRPC_OnShootSkill_Implementation();
+
+    UFUNCTION(NetMulticast, Reliable)
+    void MulticastRPC_OnShootSkill();
+    void MulticastRPC_OnShootSkill_Implementation();
+
+private:
+    void OnTeleport(const struct FInputActionValue& InVal);
+
+protected:
+    UFUNCTION(Server, Reliable)
+    void ServerRPC_OnTeleport();
+    void ServerRPC_OnTeleport_Implementation();
+
+    UFUNCTION(NetMulticast, Reliable)
+    void MulticastRPC_OnTeleport();
+    void MulticastRPC_OnTeleport_Implementation();
+
+public:    
+    void OnCapture(const struct FInputActionValue& InVal);
+
+protected:
+    UFUNCTION(Server, Reliable)
+    void ServerRPC_OnCapture();
+    void ServerRPC_OnCapture_Implementation();
+
+    UFUNCTION(NetMulticast, Reliable)
+    void MulticastRPC_OnCapture();
+    void MulticastRPC_OnCapture_Implementation();
 
 private:
     void OnChargeAction(const struct FInputActionValue& InVal);
@@ -90,14 +166,6 @@ private:
 private:
     void OnSelectAction(const struct FInputActionValue& InVal);
     void OnInitAction(const struct FInputActionValue& InVal);
-
-    void OnChargingSkill(const struct FInputActionValue& InVal);
-    void OnShootSkill(const struct FInputActionValue& InVal);
-
-    void OnTeleport(const struct FInputActionValue& InVal);
-
-public:    
-    void OnCapture(const struct FInputActionValue& InVal);
 
 private:
     void SetMode(EWeaponType InType);
@@ -110,7 +178,10 @@ private:
     EWeaponType Type = EWeaponType::MAX;
 
 public:
+    UPROPERTY(Replicated)
     bool bCanSkill = true;
+
+    UPROPERTY(Replicated)
     bool bUsedSkill = false;
 
 private:

@@ -34,9 +34,9 @@ public:
     FORCEINLINE void EnableFixedCamera() { bFixedCamera = true; }
     FORCEINLINE void DisableFixedCamera() { bFixedCamera = false; }
 
-private:
+public:
     UPROPERTY()
-    float Speed[(int32)ESpeedType::MAX] = { 464, 603.2 };
+    float Speed[(int32)ESpeedType::MAX];
 
 private:
     UPROPERTY(EditAnywhere, Category = "CameraSpeed")
